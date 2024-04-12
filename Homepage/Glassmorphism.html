@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <script src="vanilla-tilt.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+      *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family: 'Poppins', Sans-Serif;
+      }
+      body{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-size:11px;
+      }
+      .container{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction:column;
+        z-index:1;
+      }
+      .panel{
+        margin:30px;
+        height:300px;
+        width:90%;
+        text-align:center;
+        border:solid rgba(255,255,255,0.4);
+        background-color: rgba(255,255,255,0.1);
+        border-bottom:1px;
+        border-right:1px;
+        border-radius:20px;
+        box-shadow:0 15px 30px 0 rgba(0,0,0,0.15);
+        backdrop-filter:blur(4px);
+        display:flex;
+        align-items:center;
+        flex-direction:column;
+      }
+      
+      .panel H2{
+        font-size:45px;
+        color:rgba(255,255,255,0.5);
+        position:relative;
+        left:60px;
+        top:10px;
+      }
+      
+      .panel H3{
+        color:white;
+        font-size:17px;
+      }
+      
+      .panel p{
+        color:rgba(255,255,255,0.6);
+        font-size:12px;
+      }
+      
+      .panel a{
+        margin-top:30px;
+        line-height:40px;
+        display:block;
+        height:40px;
+        width:120px;
+        background-color:rgba(255,255,255,1);
+        text-decoration:none;
+        color:black;
+        border-radius:17px;
+        box-shadow:0 15px 30px 0 rgba(0,0,0,0.5);
+      }
+      
+      .js-tilt-glare-inner{
+        border-radius:20px;
+      }
+      
+      @media(min-device-aspect-ratio: 1/1)
+      {
+        .container{
+          flex-direction:row;
+        }
+        .panel{
+          height:230px;
+          margin:5px;
+        }
+        br{
+          content: "A" !important;
+          display: block !important;
+          margin-bottom: 0em !important;
+        }
+      }
+    </style>
+  </head>
+  <body bgcolor="#333">
+    <img src="background.jpg" style="position:fixed;height:100%;width:100%;top:0px;left:0px;" >
+    <div class="container">
+      <br>
+      <div class="panel">
+        <H2>01</H2>
+        <H3>The Title Here</H3>
+        <p>The main text or the <br>description should be written<br>here. This is just a <br>placeholder for the text</p>
+        <a href="#">Click Here</a>
+      </div>
+      <div class="panel">
+        <H2>02</H2>
+        <H3>The Next Title Here</H3>
+        <p>The main text or the <br>description should be written<br>here. This is just a <br>placeholder for the text</p>
+        <a href="#">Click Here</a>
+      </div>
+      <div class="panel">
+        <H2>03</H2>
+        <H3>The Nextest Title Here</H3>
+        <p>The main text or the <br>description should be written<br>here. This is just a <br>placeholder for the text</p>
+        <a href="#">Click Here</a>
+      </div>
+    </div>
+    <script>
+      VanillaTilt.init(document.querySelectorAll(".panel"), {
+		    max: 25,
+		    speed: 400,
+        glare:true,
+        "max-glare":0.2
+	    });
+	  </script>
+  </body>
+</html>

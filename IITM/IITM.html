@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b575671b41.js" crossorigin="anonymous"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
+      *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family: 'Montserrat', sans-serif;
+        font-weight:700;
+      }
+      body{
+        background:url(bg.png);
+        background-color:#FCFCF9;
+        background-repeat: no-repeat; 
+        background-position:center;
+        background-size: cover;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      .title{
+        margin:70px 0px 50px 0px;
+        display:flex;
+        flex-direction:row;
+        font-family:Sans-Serif;
+      }
+      .title img{
+        width:80px;
+        height:80px;
+      }
+      .title .text{
+        line-height:80px;
+        font-size:24px;
+        padding-left: 10px;
+        font-weight:650;
+      }
+      .menu .card{
+        width:180px;
+        height:180px;
+        background-color:#EEE7DE;
+        margin:10px;
+        border-radius:0px;
+        flex-direction: column;
+        font-size:14px;
+        text-align:center;
+        color:#5f5f5f;
+      }
+      .menu div{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+      }
+      .menu .c1{
+        border-top-left-radius: 25px;
+      }
+      .menu .c2{
+        border-top-right-radius: 25px;
+      }
+      .menu .c3{
+        border-bottom-left-radius: 25px;
+      }
+      .menu .c4{
+        border-bottom-right-radius: 25px;
+      }
+      i{
+        font-size: 60px;
+        margin-bottom: 7px;
+      }
+      .details{
+        margin-top:10px;
+        font-size:16px;
+        color:#5f5f5f;
+        /*display:flex;
+        align-items: center;
+        justify-content: center;*/
+      }
+      .details i{
+        font-size:20px;
+        margin:2px;
+      }
+      .calendar{
+        width:50px;
+        height:50px;
+        position: fixed;
+        bottom:20px;
+        right:20px;
+        background:#DCC3AC;
+        border-radius:50%;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        padding-top:6px;
+        color:#3f3f3f;
+      }
+      .calendar i{
+        font-size:24px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar" onclick="document.location.href='https://calendar.google.com/'"><i class="fa-regular fa-calendar-days"></i></div>
+    <div class="title" onclick='document.location.href="https://study.iitm.ac.in/ds/"'><div><img src="logo.png"/></div><div class='text'>IIT Madras, BS Degree</div></div>
+    <div class="menu">
+      <div>
+        <div class="card c1" onclick='document.location.href="https://seek.onlinedegree.iitm.ac.in/courses/ns_23t2_cs1001"'><div><i class="fa-solid fa-tv"></i></div>Computation<br>Thinking</div>
+        <div class="card c2" onclick='document.location.href="https://seek.onlinedegree.iitm.ac.in/courses/ns_23t2_ma1001"'><div><i class="fa-solid fa-square-root-variable"></i></div>Mathematics</div>
+      </div>
+      <div>
+        <div class="card c3" onclick='document.location.href="https://seek.onlinedegree.iitm.ac.in/courses/ns_23t2_ma1002"'><div><i class="fa-solid fa-chart-line"></i></div>Statistics</div>
+        <div class="card c4" onclick='document.location.href="https://seek.onlinedegree.iitm.ac.in/courses/ns_23t2_hs1001"'><div><i class="fa-regular fa-comments"></i></div>English</div>
+      </div>
+    </div>
+    <div class="details" onclick='document.location.href="https://app.onlinedegree.iitm.ac.in/student_dashboard/latest_updates"'>Details<i class="fa-solid fa-hyphen"></i><i class="fa-solid fa-arrow-right-long"></i></div>
+  </body>
+</html>

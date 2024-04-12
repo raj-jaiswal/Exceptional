@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      alert('Try clicking on the screen');
+      let movers=[];
+      let size=15;
+      let initialSpeed=2;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        for(let i=0;i<50;i++){
+          movers[i]=new Mover();
+        }
+      }
+      function draw(){
+        background(53,50);
+        for(let i=0;i<20;i++){
+          movers[i].update();
+          movers[i].show();
+        }
+      }
+      class Mover{
+        constructor(){
+          this.location=createVector(width/2,height/2);
+          this.velocity=createVector(random(-1,1),random(-1,1));
+          this.velocity.normalize();
+          this.velocity.mult(initialSpeed);
+          this.acceleration=createVector(0,0);
+        }
+        update(){
+          let mousePos=createVector(mouseX,mouseY)
+          this.acceleration=p5.Vector.sub(mousePos,this.location);
+          this.acceleration.normalize();
+          this.acceleration.mult(0.1);
+          
+          this.velocity.add(this.acceleration);
+          this.velocity.limit(5);
+          this.location.add(this.velocity);
+          this.check();
+        }
+        show(){
+          stroke(255);
+          circle(this.location.x,this.location.y,size)
+        }
+        check(){
+          if(this.location.x>width){this.location.x=0}
+          if(this.location.x<0){this.location.x=width}
+          if(this.location.y>height){this.location.y=0}
+          if(this.location.y<0){this.location.y=height}
+        }
+      }
+    </script>
+  </body>

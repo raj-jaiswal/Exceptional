@@ -1,0 +1,198 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<body>
+  <script src="https://cdn.jsdelivr.net/gh/freshfork/p5.EasyCam@1.2.1/p5.easycam.min.js"></script>
+  <script>
+    alert('Drag over the circle to see the effect');
+  
+    let data;
+    let currentMonth=0;
+    let currentYear=0;
+    
+    let canvas1;
+    let canvas2;
+    
+    const s1=function(sketch){
+      let months;
+      let years;
+      
+      let negative=65;
+      let positive=180;
+      
+      let easycam;
+      let font;
+      
+      sketch.preload=function(){
+        data=sketch.loadTable('Global Temperature Rise.csv','csv','header');
+        font=sketch.loadFont('Kirvy-Bold.otf');
+      }
+      sketch.setup=function(){
+        canvas1=sketch.createCanvas(window.innerWidth,window.innerHeight/2,sketch.WEBGL);
+        canvas1.position(0,0);
+        easycam=sketch.createEasyCam({distance:sketch.width});
+        months=data.columns.slice(1,13);
+        years=data.getColumn('Year');
+      }
+      
+      sketch.draw=function(){
+        sketch.background(0);
+        
+        sketch.stroke(255);
+        sketch.strokeWeight(2);
+        sketch.noFill();
+        sketch.circle(0,0,negative*2);
+        sketch.circle(0,0,positive*2);
+        sketch.stroke(100,255,100);
+        sketch.circle(0,0,negative+positive);
+        
+        sketch.textFont(font,50);
+        sketch.textAlign(sketch.CENTER);
+        sketch.textSize(12);
+        sketch.fill(255,255,255);
+    
+        sketch.text('-1\u00B0',negative-15,5);
+        sketch.text('0\u00B0',(positive+negative)/2-15,5);
+        sketch.text('+1\u00B0',positive-15,5);
+        sketch.textSize(30);
+        sketch.text(years[currentYear],0,15);
+        
+        sketch.textSize(15);
+        for(let i=0;i<months.length;i++){
+          sketch.push()
+          angle=(sketch.TWO_PI/12*i)-sketch.PI/2;
+          r=positive+20;
+          sketch.translate(r*sketch.cos(angle),r*sketch.sin(angle));
+          sketch.text(months[i],0,0);
+          sketch.pop();
+        }
+        
+        let previous;
+        for(let i=0;i<currentYear;i++){
+          lim=12
+          if(i==currentYear-1){
+            lim=currentMonth;
+          }
+          //strokeWeight(1);
+          for(let j=0;j<lim;j++){
+            let val=data.getRow(i).get(j+1);
+            if(val!=='***'){
+              val=parseFloat(val);
+              if(i!=0 || j!=0){
+                let r=sketch.map(val,-1,1,negative,positive);
+                let pr=sketch.map(previous,-1,1,negative,positive);
+                let angle=(sketch.TWO_PI/12*j)-sketch.PI/2;
+                let x1=r*sketch.cos(angle);
+                let y1=r*sketch.sin(angle);
+                let z1=sketch.map(i*12+j,0,years.length*12,-200,0);
+                let x2=pr*sketch.cos(angle-sketch.PI/6);
+                let y2=pr*sketch.sin(angle-sketch.PI/6);
+                let z2=sketch.map(i*12+j-1,0,years.length*12,-200,0);
+                
+                let c=sketch.color(255);
+                let avg=(val+previous)/2;
+                if(avg>0){
+                  c=sketch.lerpColor(sketch.color(255),sketch.color(255,0,0),avg);
+                }
+                else{
+                  c=sketch.lerpColor(sketch.color(255),sketch.color(0,0,255),-avg);
+                }
+                sketch.stroke(c);
+                if(easycam.getState().rotation[0]==1){
+                  sketch.line(x1,y1,x2,y2);
+                }
+                else{
+                  sketch.line(x1,y1,z1,x2,y2,z2);
+                }
+              }
+              previous=val;
+            }
+            else{
+              break;
+            }
+          }
+        }
+        currentMonth+=4;
+        if(currentMonth>12 && currentYear<years.length-1){
+          currentMonth=0;
+          currentYear++;
+        }
+      }
+    }
+    
+    
+    const s2=function(sketch){
+      let w=280;
+      let h=200;
+      let years;
+      let pavg;
+      
+      sketch.setup=function(){
+        canvas2=sketch.createCanvas(window.innerWidth,window.innerHeight/2);
+        canvas2.position(0,sketch.width-15);
+      }
+      sketch.draw=function(){
+        sketch.background(0);
+        sketch.translate(sketch.width/2-w/2,sketch.height/2)
+        sketch.stroke(255);
+        sketch.textSize(18);
+        sketch.textAlign(sketch.CENTER);
+        sketch.fill(255);
+        sketch.strokeWeight(2);
+        
+        sketch.line(0,0,w,0);
+        sketch.line(0,-h/2,w,-h/2);
+        sketch.line(0,h/2,w,h/2);
+        
+        sketch.noStroke();
+        sketch.text('Global Climate Change in \u00B0C',w/2,-h/2-40);
+        sketch.textSize(15);
+        sketch.text('-1\u00B0 C',w/2,h/2+20);
+        sketch.text('+1\u00B0 C',w/2,-h/2-10);
+        //sketch.strokeWeight(1);
+        if(data){
+          years=data.getColumn('Year');
+          if(years.length!=0){
+            sketch.text(years[0],-30,5);
+            sketch.text(years[years.length-1],w+30,5);
+            
+            sketch.stroke(255);
+            for(i=0;i<currentYear;i++){
+              row=data.getRow(i);
+              avg=0;
+              for(j=0;j<12;j++){
+                val=row.get(j+1);
+                if(val!='***'){
+                  avg+=parseFloat(val);
+                }
+              }
+              avg=avg/12;
+              if(i>0){
+                let mid=(avg+pavg)/2;
+                let c=sketch.color(255);
+                if(mid>0){
+                  c=sketch.lerpColor(sketch.color(255),sketch.color(255,0,0),mid);
+                }
+                else{
+                  c=sketch.lerpColor(sketch.color(255),sketch.color(0,0,255),-mid);
+                }
+                sketch.stroke(c);
+                let y1=-sketch.map(avg,-1,1,-h/2,h/2);
+                let y2=-sketch.map(pavg,-1,1,-h/2,h/2);
+                sketch.line((i-1)*w/years.length,y2,i*w/years.length,y1)
+              }
+              pavg=avg;
+            }
+          }
+        }
+      }
+    }
+    
+    new p5(s1);
+    new p5(s2);
+  </script>
+</body>
+</html>

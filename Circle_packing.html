@@ -1,0 +1,93 @@
+<!-- Only setuo here -->
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <!--till here-->
+    <script>
+      //make a list to store all the circles 
+      let circles=[];
+      //The maximum number of circles is 50
+      let max=50;
+      
+      //On the start of the webpage
+      function setup(){
+        //create an area to draw things
+        createCanvas(window.innerWidth,window.innerHeight);
+        //fill the empty list named circles with some circles of radius 0
+        //also,checking if the random centres are not in each other's position
+        for(let i=0;i<max;i++){
+          fillUp();
+        }
+      }
+      //On every frame, do this
+      //basically, 30 times a second
+      function draw(){
+        //draw a black background 
+        background(0);
+        //set the pen's color to white
+        //so everything i draw turns white
+        stroke(255);
+        fill(255,100);
+        //increase the radius of circle, and stop increasing radius if two circles touch each other 
+        for(let i=0;i<circles.length;i++){
+          circles[i].update();
+        }
+        fillUp();
+      }
+      class Circle{
+        constructor(x,y){
+          this.pos=createVector(x,y);
+          this.r=0;
+        }
+        update(){
+          circle(this.pos.x,this.pos.y,this.r);
+          let increase=true;
+          for(let i=0;i<circles.length;i++){
+            let c2=circles[i];
+            if(c2!=this){
+              if(p5.Vector.sub(c2.pos,this.pos).mag()<=this.r/2+c2.r/2){
+                increase=false;
+                break;
+              }
+            }
+          }
+          if(increase){
+            this.r++;
+          }
+        }
+        check(){
+          for(let i=0;i<circles.length;i++){
+            let c2=circles[i];
+            if(c2!=this){
+              if(p5.Vector.sub(c2.pos,this.pos).mag()<=this.r/2+c2.r/2){
+                return true;
+              }
+            }
+          }
+          return false;
+        }
+      }
+      function fillUp(){
+        let newC=new Circle(random(width),random(height));
+        if(circles.length>=1000){
+          noLoop();
+          return;
+          //comment lol
+        }
+        if(newC.check()){
+          fillUp();
+          return;
+        }
+        circles.push(newC);
+      }
+    </script>
+  </body>
+</html>

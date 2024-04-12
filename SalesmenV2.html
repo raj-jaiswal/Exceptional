@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let points=[];
+      let path=[];
+      let startPos;
+      amt=10;
+      function setup(){
+        createCanvas(window.innerWidth-10,window.innerWidth-10);
+        for(var i=0;i<amt;i++){
+          points[i]=new Vector(random(width),random(height));
+        }
+        startPos=points[0];
+        points[0].visited=true;
+        path.push(startPos);
+        frameRate(1);
+      }
+      function draw(){
+        background(51);
+        strokeWeight(1);
+        stroke(255,200);
+        for(var i=0;i<points.length-1;i++){
+          line(points[i].x,points[i].y,points[i+1].x,points[i+1].y);
+        }
+        
+        path.push(findNearest(path[path.length-1]));
+        
+        colorMode(HSB);
+        strokeWeight(2);
+        for(var i=0;i<path.length-1;i++){
+          colorMode(HSB);
+          stroke((i*5+frameCount) % 360, 100, 100)
+          line(path[i].x,path[i].y,path[i+1].x,path[i+1].y);
+        }
+        colorMode(RGB);
+        stroke(255);
+        strokeWeight(5);
+        points.forEach(dot=>{
+          point(dot.x,dot.y);
+        });
+        strokeWeight(7);
+        stroke(255,0,0);
+        point(startPos.x,startPos.y);
+        
+        if(path.length==points.length){
+          noLoop();
+          return;
+        }
+      }
+      function Vector(x,y){
+        this.x=x;
+        this.y=y;
+        this.visited=false;
+      }
+      function distance(x1,y1,x2,y2){
+        return sqrt((x2-x1)^2+(y2-y2)^2);
+      }
+      function findNearest(v){
+        let minDist=10000000000;
+        let closest;
+        let index;
+        for(var i=0;i<points.length;i++){
+          if(!points[i].visited){
+            let dist=distance(v.x,v.y,points[i].x,points[i].y);
+            if(dist<minDist){
+              minDist=dist;
+              index=i;
+              closest=points[i];
+            }
+          }
+        }
+        console.log(minDist)
+        points[index].visited=true;
+        return closest;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>body {margin:0;text-align:centre;} canvas{position:fixed;top:15;left:15;}</style>
+  </head>
+  <body>
+    <script>
+      var radius=400;
+      var diff=50;
+      let hour,minute,second;
+      let hourAngle,minuteAngle,secondAngle;
+      function setup()
+      {
+        createCanvas(950,950);
+        var d= new Date();
+        hour=d.getHours();minute=d.getMinutes();second=d.getSeconds();
+        hour+=minute/60;
+        minute+=second/60;
+        hourAngle=TWO_PI/12*hour;
+        minuteAngle=TWO_PI/60*minute;
+        secondAngle=TWO_PI/60*second;
+        if(hour>12)
+        {
+          hour-=12;
+        }
+      }
+      function draw()
+      {
+        background(55,5);
+        translate(width/2,height/2);
+        frameRate(20);
+        rotate(-PI/2);
+        
+        strokeWeight(30);
+        stroke(243,43,87);
+        var AxisSec=rotationAxis(secondAngle,radius);
+        point(AxisSec.x,AxisSec.y);
+        secondAngle+=TWO_PI/60/20;
+        line(0,0,AxisSec.x,AxisSec.y);
+        
+        stroke(0,233,255);
+        var AxisMin=rotationAxis(minuteAngle,radius-diff);
+        point(AxisMin.x,AxisMin.y);
+        minuteAngle+=TWO_PI/60/60/20;
+        line(0,0,AxisMin.x,AxisMin.y);
+        
+        stroke(249,243,6);
+        var AxisHour=rotationAxis(hourAngle,radius-2*diff);
+        point(AxisHour.x,AxisHour.y);
+        hourAngle+=TWO_PI/60/60/12/20;
+        line(0,0,AxisHour.x,AxisHour.y);
+        
+        rotate(-PI/4);
+        stroke(255);
+        ellipse(0,0,20,20);
+        strokeWeight(5);
+        line(250,250,300,300);
+        line(-250,-250,-300,-300);
+        rotate(PI/2);
+        line(250,250,300,300);
+        line(-250,-250,-300,-300);
+      }
+      function rotationAxis(a,r)
+      {
+        var obj={x:cos(a)*r,
+                 y:sin(a)*r}
+        return obj;
+      }
+      document.addEventListener("visibilitychange", event => {
+        if (document.visibilityState == "visible") {
+          var d= new Date();
+          hour=d.getHours();minute=d.getMinutes();second=d.getSeconds();
+          hour+=minute/60;
+          minute+=second/60;
+          hourAngle=TWO_PI/12*hour;
+          minuteAngle=TWO_PI/60*minute;
+          secondAngle=TWO_PI/60*second;
+          if(hour>12)
+          {
+            hour-=12;
+          }}
+      });
+    </script>
+  </body>
+</html>

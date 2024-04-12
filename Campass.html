@@ -1,0 +1,57 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>    <style>body {margin:0;text-align:centre;} /*canvas{margin-left:15px;margin-top:15px}*/</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="display:flex;justify-content:center;align-items: center;text-align:center;font-family:sans-serif;">
+  <div>
+  <div id='Img1'>
+  <h2>N</h2>
+  <div id="comp"></div>
+  <h2>S</h2>
+  </div>
+  <H2 id='deg'></H2>
+  </div>
+  <script>
+  let compass=0;
+    window.addEventListener("deviceorientationabsolute", handler, true);
+    function handler(e) {
+      compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+      if(compass<180){
+        document.getElementById('Img1').style.transform='rotateZ('+(-compass)+'deg)';
+        document.getElementById('deg').innerHTML=Math.round(compass)+'&deg;';
+        drawArc(true);
+      }else{
+        compass=360-compass;
+        document.getElementById('Img1').style.transform='rotateZ('+(compass)+'deg)';
+        document.getElementById('deg').innerHTML=Math.round(compass)+'&deg;';
+        drawArc(false);
+      }
+    }
+    
+    let img;
+    function preload(){
+      img=loadImage('https://raw.githubusercontent.com/raj-jaiswal/user-data/main/compass.png');
+    }
+    function setup(){
+      angleMode(DEGREES);
+      let canv=createCanvas(240,240);
+      canv.parent('comp');
+      background(255);
+      translate(120,120);
+      image(img,-120,-120,240,240);
+    }
+    function drawArc(bool){
+      background(255);
+      image(img,-120,-120,240,240);
+      noFill();
+      strokeWeight(4);
+      stroke(253,55,55);
+      if(bool){
+        arc(0,0,200,200,-90,compass-90);
+      }else{
+        arc(0,0,200,200,270-compass,-90);
+      }
+    }
+  </script>
+</body>

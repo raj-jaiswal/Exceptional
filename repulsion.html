@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(25,25,25);
+        color:white;
+        font-family:Sans-Serif;
+      }
+      canvas{
+        margin-bottom:15px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/gh/freshfork/p5.EasyCam@1.2.1/p5.easycam.min.js"></script>
+    <script>
+      let url=window.location.href.split('?n=')[1];
+      let n=url?url:4;
+      let nSlider;
+      let vSlider;
+      let particles=[]
+      function setup(){
+        createCanvas(windowWidth,windowHeight-70,WEBGL);
+        createEasyCam({distance:200});
+        nSlider=createSlider(1,20,4,1);
+        vSlider=createSlider(0.1,2,0.8,0.01);
+        for(let i=0;i<n;i++){
+          particles.push(p5.Vector.random3D().mult(50));
+        }
+      }
+      function draw(){
+        if(nSlider.value()!=n){
+          n=nSlider.value();
+          particles=[];
+          for(let i=0;i<n;i++){
+            particles.push(p5.Vector.random3D().mult(50));
+          }
+        }
+        background(0);
+        noStroke();
+        fill(255);
+        sphere(3);
+        particles.forEach((p)=>{
+          stroke(255,0,0);
+          strokeWeight(0.5);
+          line(0,0,0,p.x,p.y,p.z);
+          noStroke();
+          fill(255);
+          push()
+          translate(p.x,p.y,p.z);
+          sphere(3);
+          pop()
+        });
+        //console.log(particles)
+        let temp=[]
+        for(let i=0;i<n;i++){
+          temp.push(particles[i].copy())
+        }
+        for(let i=0;i<n;i++){
+          for(let j=0;j<n;j++){
+            if(particles[i]!==particles[j]){
+              let diff=particles[i].sub(particles[j]);
+              diff.mult(vSlider.value())
+              temp[i]=temp[i].add(diff);
+              temp[i].setMag(50);
+            }
+          }
+        }
+        particles=temp;
+      }
+    </script>
+  </body>
+</html>

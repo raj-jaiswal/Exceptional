@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let points=[];
+      let Best=[];
+      let minDist;
+      let startPos;
+      amt=10;
+      function setup(){
+        createCanvas(window.innerWidth-10,window.innerWidth-10);
+        for(var i=0;i<amt;i++){
+          points[i]=new Vector(random(width),random(height));
+        }
+        startPos=points[0];
+        Best=points.slice();
+        minDist=calcDist(Best);
+      }
+      function draw(){
+        background(51);
+        strokeWeight(1);
+        stroke(255,200);
+        for(var i=0;i<points.length-1;i++){
+          line(points[i].x,points[i].y,points[i+1].x,points[i+1].y);
+        }
+        let a=Math.floor(random(points.length));
+        let b=Math.floor(random(points.length));
+        let ab={a,b};
+        ab=check(a,b);
+        points=swap(points,ab.a,ab.b);
+        
+        let distance=calcDist(points);
+        if(distance<minDist){
+          minDist=distance;
+          Best=points.slice();
+        }
+        
+        colorMode(HSB);
+        strokeWeight(2);
+        for(var i=0;i<Best.length-1;i++){
+          colorMode(HSB);
+          stroke((i*5+frameCount) % 360, 100, 100)
+          line(Best[i].x,Best[i].y,Best[i+1].x,Best[i+1].y);
+        }
+        colorMode(RGB);
+        stroke(255);
+        strokeWeight(5);
+        points.forEach(dot=>{
+          point(dot.x,dot.y);
+        });
+        strokeWeight(7);
+        stroke(255,0,0);
+        point(startPos.x,startPos.y);
+      }
+      function swap(arr,a,b){
+        var temp=arr[b];
+        arr[b]=arr[a];
+        arr[a]=temp;
+        return arr;
+      }
+      function calcDist(arr){
+        let sum=0;
+        for(var i=0;i<arr.length-1;i++){
+          sum+=distance(arr[i].x,arr[i].y,arr[i+1].x,arr[i+1].y);
+        }
+        return sum;
+      }
+      function Vector(x,y){
+        this.x=x;
+        this.y=y;
+      }
+      function distance(x1,y1,x2,y2){
+        return ((x2-x1)^2+(y2-y2)^2);
+      }
+      function check(a,b){
+        if(a==0 || b==0){
+          let newA=Math.floor(random(points.length));
+          let newB=Math.floor(random(points.length));
+          let ab=check(newB,newB);
+          let result={a: ab.a,
+                      b: ab.b};
+          return result;
+        }
+        else{
+          return {a,b};
+        }
+      }
+    </script>
+  </body>
+</html>

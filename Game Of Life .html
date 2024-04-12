@@ -1,0 +1,214 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+      button{
+        position:fixed;
+        display:block;
+        top:80%;
+        left:50%;
+        transform:translateX(-50%);
+        width:100px;
+        height:40px;
+        border:0;
+        background-color:white;
+        color:black;
+        border-radius:20px;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="frameRate(15);started=true;this.style.display='none';">Start</button>
+    <script>
+      let tileSize=10;
+      var xSize;
+      var ySize;
+      let grid=[];
+      let started=false;
+      
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        xSize=floor(width/tileSize);
+        ySize=floor(height/tileSize);
+        for(let i=0;i<xSize;i++){
+          grid[i]=[];
+          for(let j=0;j<ySize;j++){
+            grid[i][j]=new Tile(i,j);
+          }
+        }
+        for(let i=0;i<xSize;i++){
+          for(let j=0;j<ySize;j++){
+            grid[i][j].getNeighbours(grid);
+          }
+        }
+      }
+      
+      function mousePressed(){
+        if(!started){
+          let xPos=floor(mouseX/tileSize);
+          let yPos=floor(mouseY/tileSize);
+          if(grid[xPos]&&grid[xPos][yPos]){
+            grid[xPos][yPos].alive=true;
+          }
+        }
+      }
+      
+      function draw(){
+        background(52);
+        stroke(200);
+        strokeWeight(0.3);
+        for(let i=0;i<xSize;i++){
+          for(let j=0;j<ySize;j++){
+            grid[i][j].show();
+            if(started){
+              grid[i][j].tick();
+            }
+          }
+        }
+        for(let i=0;i<xSize;i++){
+          for(let j=0;j<ySize;j++){
+            if(started){
+              grid[i][j].update();
+            }
+          }
+        }
+      }
+      
+      
+      class Tile{
+        constructor(x,y){
+          this.x=x;
+          this.y=y;
+          this.alive=false;
+          this.tempAlive=false;
+          this.neighbours=[];
+        }
+        show(){
+          if(!this.alive){
+            noFill();
+          }
+          else{
+            fill(50,220,65);
+          }
+          rect(this.x*tileSize,this.y*tileSize,tileSize,tileSize);
+        }
+        tick(){
+          let lives=this.getLives();
+          if(lives<2){
+            this.tempAlive=false;
+          }
+          else if(lives==3){
+            this.tempAlive=true;
+          }
+          else if(lives==2&&this.alive){
+            this.tempAlive=true;
+          }
+          else if(lives>3){
+            this.tempAlive=false;
+          }
+        }
+        update(){
+          this.alive=this.tempAlive;
+        }
+        getLives(){
+          let num=0;
+          for(var i=0;i<this.neighbours.length;i++){
+            if(this.neighbours[i].alive){
+              num++;
+            }
+          }
+          return num;
+        }
+        getNeighbours(G){
+          let x=this.x;
+          let y=this.y;
+          if((x>0&&y>0)&&(x<xSize-1&&y<ySize-1)){
+            this.neighbours.push(G[x-1][y-1]);
+            this.neighbours.push(G[x-1][y]);
+            this.neighbours.push(G[x][y-1]);
+            this.neighbours.push(G[x+1][y]);
+            this.neighbours.push(G[x][y+1]);
+            this.neighbours.push(G[x-1][y+1]);
+            this.neighbours.push(G[x+1][y-1]);
+            this.neighbours.push(G[x+1][y+1]);
+          }
+          else if(x==0&&y>0&&y<ySize-1){
+            this.neighbours.push(G[xSize-1][y-1]);
+            this.neighbours.push(G[xSize-1][y]);
+            this.neighbours.push(G[x][y-1]);
+            this.neighbours.push(G[x+1][y]);
+            this.neighbours.push(G[x][y+1]);
+            this.neighbours.push(G[xSize-1][y+1]);
+            this.neighbours.push(G[x+1][y-1]);
+            this.neighbours.push(G[x+1][y+1]);
+          }
+          else if(x>0&&y==0&&x<xSize-1){
+            this.neighbours.push(G[x-1][ySize-1]);
+            this.neighbours.push(G[x-1][y]);
+            this.neighbours.push(G[x][ySize-1]);
+            this.neighbours.push(G[x+1][y]);
+            this.neighbours.push(G[x][y+1]);
+            this.neighbours.push(G[x-1][y+1]);
+            this.neighbours.push(G[x+1][ySize-1]);
+            this.neighbours.push(G[x+1][y+1]);
+          }
+          else if(x==xSize-1&&y>0&&y<ySize-1){
+            this.neighbours.push(G[x-1][y-1]);
+            this.neighbours.push(G[x-1][y]);
+            this.neighbours.push(G[x][y-1]);
+            this.neighbours.push(G[0][y]);
+            this.neighbours.push(G[x][y+1]);
+            this.neighbours.push(G[x-1][y+1]);
+            this.neighbours.push(G[0][y-1]);
+            this.neighbours.push(G[0][y+1]);
+          }
+          else if(y==ySize-1&&x>0&&x<xSize-1){
+            this.neighbours.push(G[x-1][y-1]);
+            this.neighbours.push(G[x-1][y]);
+            this.neighbours.push(G[x][y-1]);
+            this.neighbours.push(G[x+1][y]);
+            this.neighbours.push(G[x][0]);
+            this.neighbours.push(G[x-1][0]);
+            this.neighbours.push(G[x+1][y-1]);
+            this.neighbours.push(G[x+1][0]);
+          }
+          else if(y==0&&x==0){
+            this.neighbours.push(G[xSize-1][ySize-1]);
+            this.neighbours.push(G[xSize-1][ySize-2]);
+            this.neighbours.push(G[xSize-2][ySize-1]);
+            this.neighbours.push(G[x+1][y]);
+            this.neighbours.push(G[x][y+1]);
+            this.neighbours.push(G[x+1][y+1]);
+          }
+          else if(y==ySize-1&&x==xSize-1){
+            this.neighbours.push(G[x-1][y-1]);
+            this.neighbours.push(G[x-1][y]);
+            this.neighbours.push(G[x][y-1]);
+            this.neighbours.push(G[1][0]);
+            this.neighbours.push(G[0][1]);
+            this.neighbours.push(G[0][0]);
+          }
+          else if(x==0&&y==ySize-1){
+            this.neighbours.push(G[xSize-1][1]);
+            this.neighbours.push(G[xSize-2][0]);
+            this.neighbours.push(G[x+1][y]);
+            this.neighbours.push(G[x][y-1]);
+            this.neighbours.push(G[xSize-1][0]);
+            this.neighbours.push(G[x+1][y-1]);
+          }
+          else if(x==xSize-1&&y==0){
+            this.neighbours.push(G[x-1][y]);
+            this.neighbours.push(G[1][ySize-1]);
+            this.neighbours.push(G[0][ySize-2]);
+            this.neighbours.push(G[x][y+1]);
+            this.neighbours.push(G[x-1][y+1]);
+            this.neighbours.push(G[0][ySize-1]);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

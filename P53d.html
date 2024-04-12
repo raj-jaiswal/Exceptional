@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight,WEBGL);
+        angleMode(DEGREES);
+      }
+      function draw(){
+        background(0);
+        //translate(width/2,height/2);
+        rotateX(-mouseY);
+        rotateY(mouseX);
+        stroke(255);
+        noFill();
+        sphere(100,10,10);
+        box(250);
+        fill(255,100);
+        noStroke();
+        plane(300);
+      }
+    </script>
+  </body>
+<html>

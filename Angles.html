@@ -1,0 +1,43 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<script>
+  let vec1;
+  let vec2;
+  let size=150;
+  function setup(){
+    createCanvas(window.innerWidth,window.innerHeight);
+    vec1=createVector(1,0);
+    vec2=createVector(0,-1);
+  }
+  function mousePressed(){
+    vec2=p5.Vector.sub(createVector(mouseX-width/2,mouseY-height/2),createVector());
+    vec2.normalize();
+  }
+  function mouseDragged(){
+    mousePressed();
+  }
+  function draw(){
+    background(0);
+    translate(width/2,height/2);
+    
+    stroke(255);
+    strokeWeight(3);
+    noFill();
+    line(0,0,vec1.x*size,vec1.y*size);
+    line(0,0,vec2.x*size,vec2.y*size);
+    
+    let angle=acos(vec1.dot(vec2)/(vec1.mag()*vec2.mag()));
+    if(vec2.y>0){
+      angle=2*PI-angle;
+    }
+    arc(0,0,50,50,2*PI-angle,0);
+    strokeWeight(1);
+    fill(255);
+    textSize(18);
+    text(Math.round(angle*180/PI),25,-25);
+  }
+</script>

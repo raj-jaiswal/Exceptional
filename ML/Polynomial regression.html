@@ -1,0 +1,136 @@
+<html>
+ <head>
+    <meta name="viewport" content="width=device-width, initial-scale=0.95">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://unpkg.com/function-plot/dist/function-plot.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        background-color: #fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction:column;
+        text-align: center;
+        margin:5px;
+      }
+    </style>
+ </head>
+ <body>
+   <div id="target" height="45vh" width="45vh"></div>
+   <div>Enter an year to predict: <input type="number" id="inp"></div>
+   <button onclick="predict(int(document.querySelector('#inp').value))">Predict</button>
+   <div id="output"></div>
+   <script>
+    let price=[];
+    let year=[];
+    let year2=[];
+    let year3=[];
+    let point=[];
+    let data=[];
+    let T=[];
+    function preload() {
+      data=loadTable('Food prices.csv','header');
+    }
+    function setup(){
+      for(var i=0;i<data.rows.length;i++){
+        if(i%12==0){
+          price.push(float(data.rows[i].arr[2]));
+          year.push(int(data.rows[i].arr[0].split('-')[0]));
+          point.push([int(data.rows[i].arr[0].split('-')[0]),float(data.rows[i].arr[2])]);
+        }
+      }
+      T[0]=random();
+      T[1]=random();
+      T[2]=random();
+      //T[3]=random();
+      
+      plot();
+      
+      for(var k=0;k<year.length;k++){
+        year[k]=(year[k]-2007.5)/13.5;
+        year2[k]=Math.pow(year[k],2);
+        //year3[k]=Math.pow(year[k],3);
+      }
+    }
+    function draw(){
+      let target=document.querySelector('#target');
+      if(target){target.remove();}
+      let div=document.createElement('div');
+      div.setAttribute('id','target');
+      document.body.append(div);
+      gradientDescend();
+      plot();
+    }
+    function plot(){
+      functionPlot({
+        target:'#target',
+        data:[{
+          points:point,
+          fnType: 'points',
+          graphType: 'scatter'
+        },{
+          fn:T[0]+'+'+T[1]+'*(x-2007.5)/13.5+'+T[2]+'*((x-2007.5)/13.5)^2'//+'+'+T[3]+'*((x-2007.5)/13.5)^3'
+        }],
+        yAxis:{
+          domain:[0,1],
+          label:'Wheat price (in $)'
+        },
+        xAxis:{
+          domain:[1990,2025],
+          label:'Year (1994 to 2021)'
+        },
+        height:380,
+        width:380
+      });
+    }
+    function gradientDescend(){
+      let tempT0=partialD(0);
+      let tempT1=partialD(1);
+      let tempT2=partialD(2);
+      //let tempT3=partialD(3);
+      
+      T[0]-=tempT0;
+      T[1]-=tempT1;
+      T[2]-=tempT2;
+      //T[3]-=tempT3;
+    }
+    function partialD(i){
+      let sum=0;
+      for(var j=0;j<price.length;j++){
+        switch(i){
+          case 0:
+            sum+=hypothesis(year[j],year2[j],year3[j])-price[j];
+            break;
+          case 1:
+            sum+=(hypothesis(year[j],year2[j],year3[j])-price[j])*year[j];
+            break;
+          case 2:
+            sum+=(hypothesis(year[j],year2[j],year3[j])-price[j])*year2[j];
+            break;
+          /*case 3:
+            sum+=(hypothesis(year[j],year2[j],year3[j])-price[j])*year3[j];
+            break;*/
+        }
+      }
+      return 0.05*sum/(price.length);
+    }
+    function hypothesis(x,y,z){
+      let sum=0;
+      sum+=T[0];
+      sum+=T[1]*x;
+      sum+=T[2]*y;
+      //sum+=T[3]*z;
+      return sum;
+    }
+    function predict(y){
+      let prediction=hypothesis((y-2007.5)/13.5,Math.pow((y-2007.5)/13.5,2));
+      document.querySelector('#output').innerHTML='The prediction of wheat prices in india for year '+y+' is '+prediction.toFixed(2)+'$';
+    }
+   </script>
+ </body>
+</html>

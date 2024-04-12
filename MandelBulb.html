@@ -1,0 +1,122 @@
+<!--special credits: Daniel Shiffman from Coding Train! choo choo!!-->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(25,25,25);
+        color:white;
+        font-family:Sans-Serif;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/gh/freshfork/p5.EasyCam@1.2.1/p5.easycam.min.js"></script>
+    <script>
+      //global variables
+      let detail=10;
+      let size=130;
+      let n=8;
+      let thickness=0.99;
+      let detailSlider,nSlider,thicknessSlider;
+      let easycam;
+      let points=[];
+      let iterations=100;
+      
+      //check if parameters already exist and if they do,add them to the values
+      let parameters=window.location.href.split('?params=');
+      if(parameters[1]){
+        let values=parameters[1].split('-');
+        console.log(values)
+        detail=values[0];
+        n=values[1];
+        thickness=values[2];
+      }
+      
+      function setup(){
+        createCanvas(350,350,WEBGL);
+        createEasyCam({distance:200});
+       
+        //creating controllable sliders
+        createElement("div","Detail (More leads to lag):");
+        detailSlider=createSlider(2,32,10,1);
+        createElement("div","Power (less leads to interesting shapes):");
+        nSlider=createSlider(2,32,8,1);
+        createElement("div","Thickness:");
+        thicknessSlider=createSlider(1,10,1,1);
+        
+        //redirect to the same page with all parameters
+        let button=createButton('Redraw').mousePressed(pressed);
+        
+        //checking for every point
+        for(let i=-detail;i<detail;i++){
+          let bool=true;
+          for(let j=-detail;j<detail;j++){
+            for(let k=-detail;k<detail;k++){
+              let zeta=createVector(0,0,0);
+              //normalize points to 0-1 scale
+              let x=i/detail;
+              let y=j/detail;
+              let z=k/detail;
+              
+              for(let a=0;a<iterations;a++){
+                let calculatedZ=convert(zeta.x,zeta.y,zeta.z);
+                //value reaching Infinity
+                if(calculatedZ.r>4){
+                  bool=true;
+                  break;
+                }
+                
+                let newx = pow(calculatedZ.r,n) * sin(calculatedZ.theta*n) * cos(calculatedZ.phi*n);
+                let newy = pow(calculatedZ.r,n) * sin(calculatedZ.theta*n) * sin(calculatedZ.phi*n);
+                let newz = pow(calculatedZ.r,n) * cos(calculatedZ.theta*n);
+  
+                zeta=createVector(newx+x,newy+y,newz+z);
+                
+                //if on last iteration 
+                if(a==iterations-1&&bool){
+                  bool=false;
+                  points.push(createVector(x*size/2,y*size/2,z*size/2));
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      function draw(){
+        background(25);
+        stroke(255);
+        strokeWeight(thickness);
+        
+        //draw each point
+        for(let i=0;i<points.length;i++){
+          point(points[i].x,points[i].y,points[i].z);
+        }
+      }
+      
+      function convert(x,y,z){
+        let r = sqrt(x*x + y*y + z*z );
+        let theta = atan2(sqrt(x*x + y*y) , z);
+        let phi = atan2(y,x);
+        
+        return {r,theta,phi};
+      }
+      
+      function pressed(){
+        window.location.href=parameters[0]+'?params='+detailSlider.value()+'-'+nSlider.value()+'-'+thicknessSlider.value();
+      }
+    </script>
+  </body>
+</html>

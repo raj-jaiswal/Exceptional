@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let sep=30;
+      let amplitude=60
+      let speed=10;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+      }
+      function draw(){
+        background(0);
+        translate(0,height/2);
+        beginShape();
+        stroke(255);
+        noFill();
+        for(let i=0;i<width;i++){
+          vertex(i,30*cos(i/20)*sin(frameCount/30));
+          vertex(i,30*sin(frameCount/20-i/20));
+        }
+        endShape();
+      }
+    </script>
+  </body>
+</html>

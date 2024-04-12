@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(50,50,50);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/gh/freshfork/p5.EasyCam@1.2.1/p5.easycam.min.js"></script>
+    <script>
+      let detail=10;
+      let slider;
+      let radius=130;
+      let easycam;
+      function setup(){
+        createCanvas(350,350,WEBGL);
+        slider=createSlider(5,50,20,1);
+        createEasyCam({distance:300,rotation:[0.1913417, 0.4619398, -0.1913417, 0.8446232]});
+      }
+      function draw(){
+        background(50);
+        stroke(255);
+        strokeWeight(2);
+        //this is a comment
+        detail=slider.value();
+        for(let i=0;i<detail;i++){
+          let lat=map(i,0,detail,0,PI);
+          for(let j=0;j<detail;j++){
+            let lon=map(j,0,detail,0,TWO_PI);
+            
+            let x=radius*sin(lat)*cos(lon);
+            let y=radius*sin(lat)*sin(lon);
+            let z=radius*cos(lat);
+            
+            point(x,y,z);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

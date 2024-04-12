@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let circles=[];
+      let max=50;
+      let Text=window.location.href.split('?text=')[1];
+      let pixels=[];
+      
+      if(!Text){
+        Text="TEXT";
+      }
+      
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        background(0);
+        stroke(255);
+        fill(255);
+        textSize(100);
+        textAlign(CENTER);
+        text(Text,width/2,height/2);
+        for(let i=0;i<width;i++){
+          pixels[i]=new Array();
+          for(let j=0;j<height;j++){
+            pixels[i][j]=get(i,j)[0];
+          }
+        }
+        background(0);
+        for(let i=0;i<max;i++){
+          fillUp();
+        }
+      }
+      function draw(){
+        background(0);
+        stroke(255);
+        fill(255,100);
+        for(let i=0;i<circles.length;i++){
+          circles[i].update();
+        }
+        fillUp();
+      }
+      class Circle{
+        constructor(x,y){
+          this.pos=createVector(x,y);
+          this.r=0;
+        }
+        update(){
+          circle(this.pos.x,this.pos.y,this.r);
+          let increase=true;
+          for(let i=0;i<circles.length;i++){
+            let c2=circles[i];
+            if(c2!=this){
+              if(p5.Vector.sub(c2.pos,this.pos).mag()<=this.r/2+c2.r/2){
+                increase=false;
+                break;
+              }
+            }
+          }
+          if(increase){
+            this.r++;
+          }
+        }
+        check(){
+          for(let i=0;i<circles.length;i++){
+            let c2=circles[i];
+            if(c2!=this){
+              if(p5.Vector.sub(c2.pos,this.pos).mag()<=this.r/2+c2.r/2){
+                return true;
+              }
+            }
+          }
+          if(pixels[Math.floor(this.pos.x)][Math.floor(this.pos.y)]!=255){
+            return true;
+          }
+          return false;
+        }
+      }
+      function fillUp(){
+        let newC=new Circle(random(width),random(height));
+        if(circles.length>=500){
+          noLoop();
+          return;
+          //comment lol
+        }
+        if(newC.check()){
+          fillUp();
+          return;
+        }
+        circles.push(newC);
+      }
+    </script>
+  </body>
+</html>

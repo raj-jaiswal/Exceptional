@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let radius=200;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+      }
+      function draw(){
+        background(0);
+        frameRate(0.5);
+        noFill();
+        stroke(255);
+        iterate(frameCount,width/2,height/2,radius);
+      }
+      function iterate(i,x,y,r){
+        if(i==0||r<=2){
+          return;
+        }
+        circle(x,y,r);
+        iterate(i-1,x+r/2,y,r/2);
+        iterate(i-1,x-r/2,y,r/2);
+        iterate(i-1,x,y+r/2,r/2);
+        iterate(i-1,x,y-r/2,r/2);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body {
+        background-color:black;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+      }</style>
+  </head>
+  <body>
+    <div id="div"></div>
+    <div style="text-align:center;color:white;font-family:sans-serif; margin-top:10px;">This is A* pathfinding.<br>The algorithm tries to find the shortest distance between start and end point i.e. the two corners avoiding obstacles represented by white dot.<br>Refresh the page to see new set of obstacles</div>
+    <script>
+      var size=10;
+      var obs=600;
+      var tiles=[];
+      var rows,cols;
+      let start,end;
+      var openSet=[];
+      let closedSet=[];
+      let path=[];
+      let current;
+      var p=0;
+      
+      function setup(){
+        let canvas=createCanvas(350,350);
+        canvas.parent('div');
+        rows=width/size;
+        cols=height/size;
+        for(var i=0;i<rows;i++){
+          tiles[i]=[];
+          for(var j=0;j<cols;j++){
+            tiles[i][j]=new tile(i,j);
+          }
+        }
+        start=tiles[0][0];
+        end=tiles[rows-1][cols-1];
+        //end=tiles[10][0];
+        current=start;
+        openSet.push(current);
+        
+        for(var i=0;i<obs;i++){
+          let x=Math.round(random(rows-1));
+          let y=Math.round(random(cols-1));
+          tile=tiles[x][y];
+          if(tile!=start&&tile!=end){
+            tiles[x][y].obsticle=true;
+          }
+        }
+        for(var i=0;i<rows;i++){
+          for(var j=0;j<cols;j++){
+            tiles[i][j].find();
+            tiles[i][j].getH();
+          }
+        }
+      }
+      
+      function draw(){
+        if(openSet.length>0){
+          let f=1000;
+          for(var i=0;i<openSet.length;i++){
+            openSet[i].calc();
+            if(openSet[i].f<f){
+              f=openSet[i].f;
+              current=openSet[i];
+            }
+          }
+          if(current==end){
+            path.push(end);
+            console.log('Found!!');
+            noLoop();
+            reconstruct(current);
+            return;
+          }
+          removeAr(openSet,current);
+          closedSet.push(current);
+          
+          for(var i=0;i<current.neighbour.length;i++){
+            let n=current.neighbour[i];
+            let tempG;
+            tempG=current.g+dist(current.x,current.y,n.x,n.y);
+            
+            if(tempG<n.g||n.g==0){
+              n.g=tempG;
+              n.calc();
+              var found=false;
+              if(!openSet.includes(n)){
+                openSet.push(n);
+                n.previous=current;
+              }
+            }
+          }
+        }
+        else{
+          alert("Can't find a way. Please refresh")
+          console.log('failed!!');
+          noLoop();
+        }
+        
+        
+        background(255);
+        for(var i=0;i<rows;i++){
+          for(var j=0;j<cols;j++){
+            tiles[i][j].show(color(255));
+          }
+        }
+        for(var p=0;p<openSet.length;p++){
+          openSet[p].show(color(0,255,0));
+        }
+        
+        for(var q=0;q<closedSet.length;q++){
+          closedSet[q].show(color(255,0,0));
+        }
+        
+        reconstruct(current);
+        
+        start.show(color(255,242,47));
+        end.show(color(231,119,48));
+      }
+      
+      
+      function tile(i,j){
+        this.x=i;
+        this.y=j;
+        this.f=0;
+        this.g=0;
+        this.h=0;
+        this.obsticle=false;
+        this.neighbour=[];
+        this.sides=[];
+        this.previous;
+        
+        this.show=function(c){
+          if(!this.obsticle){
+            c.setAlpha(200);
+            fill(c);
+            noStroke();
+            rect(this.x*size,this.y*size,size-1,size-1);
+          }
+          else{
+            stroke(0);
+            strokeWeight(4);
+            point(this.x*size+size/2,this.y*size+size/2);
+            for(var i=0;i<this.sides.length;i++){
+              side=this.sides[i];
+              line(this.x*size+size/2,this.y*size+size/2,side.x*size+size/2,side.y*size+size/2);
+            }
+            strokeWeight(1);
+          }
+        }
+        
+        this.find=function(){
+          let x=this.x;
+          let y=this.y;
+          if(!this.obsticle){
+            if(x>0&&y>0&&!tiles[x-1][y-1].obsticle)
+            {this.neighbour.push(tiles[x-1][y-1]);}
+            if(x<rows-1&&y<cols-1&&!tiles[x+1][y+1].obsticle)
+            {this.neighbour.push(tiles[x+1][y+1]);}
+            if(x>0&&y<cols-1&&!tiles[x-1][y+1].obsticle)
+            {this.neighbour.push(tiles[x-1][y+1]);}
+            if(x<rows-1&&y>0&&!tiles[x+1][y-1].obsticle)
+            {this.neighbour.push(tiles[x+1][y-1]);}
+            if(x>0&&!tiles[x-1][y].obsticle)
+            {this.neighbour.push(tiles[x-1][y]);}
+            if(x<rows-1&&!tiles[x+1][y].obsticle)
+            {this.neighbour.push(tiles[x+1][y]);}
+            if(y>0&&!tiles[x][y-1].obsticle)
+            {this.neighbour.push(tiles[x][y-1]);}
+            if(y<cols-1&&!tiles[x][y+1].obsticle)
+            {this.neighbour.push(tiles[x][y+1]);}
+          }
+          else{
+            if(x>0&&tiles[x-1][y].obsticle){
+              this.sides.push(tiles[x-1][y]);
+            }
+            if(x>rows-1&&tiles[x+1][y].obsticle){
+              this.sides.push(tiles[x-1][y]);
+            }
+            if(y>0&&tiles[x][y-1].obsticle){
+              this.sides.push(tiles[x][y-1]);
+            }
+            if(y<cols-1&&tiles[x][y+1].obsticle){
+              this.sides.push(tiles[x][y+1]);
+            }
+          }
+        }
+        
+        this.getH=function(){
+          this.h=dist(this.x,this.y,tiles[rows-1][cols-1].x,tiles[rows-1][cols-1].y);
+        }
+        
+        this.calc=function(){
+          this.f=this.g+this.h;
+        }
+      }
+      
+      function removeAr(arr,item){
+        for(var i=0;i<arr.length;i++){
+          if(item==arr[i]){
+            arr.splice(i,1);
+            return;
+          }
+        }
+      }
+      function reconstruct(tile){
+        path.push(tile);
+        while(tile!=start){
+          path.push(tile.previous);
+          tile=tile.previous;
+        }
+        for(var i=0;i<path.length;i++){
+          path[i].show(color(0,0,255));
+          if(path[i-1]!=undefined){ 
+            strokeWeight(2);
+            stroke(255,50,200)
+            line(path[i].x*size+size/2,path[i].y*size+size/2,path[i-1].x*size+size/2,path[i-1].y*size+size/2);
+          }
+        }
+        strokeWeight(1);
+        path=[];
+      }
+    </script>
+  </body>
+</html>

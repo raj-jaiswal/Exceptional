@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+    alert('try clicking on screen');
+      let P;
+      
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        P=new pendulum(createVector(width/2,0),3*PI/4);
+      }
+      function draw(){
+        background(255,200);
+        P.show();
+        P.update();
+      }
+      function mouseDragged(){
+        mouse=createVector(mouseX,mouseY);
+        mag=p5.Vector.sub(mouse,createVector(width/2,0)).mag();
+        P.len=mag;
+        P.angle=mouse.sub(P.position).heading()+PI/2;
+        P.A_velocity=0;
+      }
+      function mousePressed(){
+        mouseDragged();
+      }
+      class pendulum{
+        constructor(pos,angle){
+          this.position=pos;
+          this.angle=angle;
+          this.A_velocity=0;
+          this.A_acceleration=0;
+          this.len=250;
+        }
+        update(){
+          this.A_acceleration=0.5*sin(this.angle)/this.len;
+          this.angle+=this.A_velocity;
+          this.A_velocity+=this.A_acceleration;
+          this.A_velocity*=0.995;
+        }
+        show(){
+          push()
+          translate(this.position.x,this.position.y);
+          rotate(-PI/2);
+          let x=this.len*cos(this.angle);
+          let y=this.len*sin(this.angle);
+          line(0,0,x,y);
+          circle(x,y,15);
+          pop();
+        }
+      }
+    </script>
+  </body>
+</html>

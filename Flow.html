@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let rays=[];
+      let stars=[];
+      let sep=3;
+      let num=3;
+      //let num=3+random()*5;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerWidth);
+        background(0);
+        for(let i=0;i<num;i++){
+          stars.push(new Star(random(width),random(height)));
+        }
+        for(let i=0;i<height;i+=sep){
+          rays.push(new Beam(0,i,noise(i/200),[...stars]));
+        }
+      }
+      function draw(){
+        for(let i=rays.length-1;i>=0;i--){
+          if(rays[i].show){
+            rays[i].show();
+            rays[i].update();
+            if(rays[i].pos.x>width || rays[i].pos.y>height || rays[i].pos.y<0){
+              rays=rays.slice(0,i).concat(rays.slice(i+1,rays.length));
+            }
+          }
+        }
+        /*for(let i=0;i<stars.length;i++){
+          stars[i].update();
+          stroke(255);
+          circle(stars[i].pos.x,stars[i].pos.y,50);
+        }*/
+      }
+      class Beam{
+        constructor(x,y,noise,targets){
+          this.pos=createVector(x,y);
+          this.vel=p5.Vector.fromAngle(noise*PI-PI/2);
+          //this.vel=createVector(1,0);
+          this.pX=x;
+          this.pY=y;
+          this.targets=targets;
+          this.acc=createVector(0,0);
+        }
+        show(){
+          stroke(255);
+          line(this.pos.x,this.pos.y,this.pX,this.pY);
+        }
+        update(){
+          this.pX=this.pos.x;
+          this.pY=this.pos.y;
+          this.calcForce();
+          this.vel.add(this.acc);
+          this.vel.limit(1);
+          this.pos.add(this.vel);
+          this.acc.mult(0);
+        }
+        calcForce(){
+          for(let i=0;i<this.targets.length;i++){
+            let dir=p5.Vector.sub(this.targets[i].pos,this.pos);
+            if(dir.mag()<3){
+              //this.targets=this.targets.slice(0,i).concat(this.targets.slice(i+1,this.targets.length));
+            }
+            else{
+              let mag=100*this.targets[i].strength/(dir.mag()**2);
+              dir.setMag(mag);
+              this.acc.add(dir);
+            }
+          }
+        }
+      }
+      class Star{
+        constructor(x,y){
+          this.pos=createVector(x,y);
+          this.strength=random()*5;
+          this.noise=random()*1000;
+        }
+        update(){
+          this.pos.add(p5.Vector.fromAngle(TWO_PI*noise(this.noise)));
+          this.noise+=0.01;
+        }
+      }
+    </script>
+  </body>
+</html>

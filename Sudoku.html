@@ -1,0 +1,178 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:black;
+        color:white;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let grid=[];
+      let current;
+      let missionAccomplished=false;
+      
+      function setup(){
+        createCanvas(350,350);
+        //create a 9x9 2D grid
+        for(let i=0;i<9;i++){
+          grid[i]=[];
+          for(let j=0;j<9;j++){
+            grid[i][j]=new Piece(i,j);
+          }
+        }
+        //select a random starting point and mark it as done (so i don't change its value)
+        current=grid[Math.floor(random()*9)][Math.floor(random()*9)];
+        current.done=true;
+        //find all pieces in row,column and block of each piece
+        for(let i=0;i<9;i++){
+          for(let j=0;j<9;j++){
+            grid[i][j].getNeighbours(i,j);
+          }
+        }
+        frameRate(20)
+      }
+      
+      function draw(){
+        background(255);
+        //draw a 9x9 grid with lines
+        stroke(0);
+        strokeWeight(2);
+        for(let i=0;i<3;i++){
+          line(0,i*height/3,width,i*height/3);
+          line(i*width/3,0,i*width/3,height);
+        }
+        strokeWeight(1);
+        for(let i=0;i<9;i++){
+          line(0,i*height/9,width,i*height/9);
+          line(i*width/9,0,i*width/9,height);
+        }
+        //main calculation
+        if(!missionAccomplished){
+          iterate();
+        }
+        else{
+          let amount=random(30,50);
+          for(let i=0;i<amount;i++){
+            let x=Math.floor(random(0,9));
+            let y=Math.floor(random(0,9));
+            grid[x][y].value=0;
+            noLoop();
+          }
+        }
+        //draw text for each piece
+        textAlign(CENTER,CENTER);
+        textSize(16);
+        translate(width/18,height/18);
+        for(let i=0;i<9;i++){
+          for(let j=0;j<9;j++){
+            if(grid[i][j].value!=0){
+              text(grid[i][j].value,i*width/9,j*height/9);
+            }
+          }
+        }
+      }
+      
+      function iterate(){
+        //set a random value for the current cell from its options
+        let value=current.options[Math.floor(random()*current.options.length)]
+        current.value=value;
+        let oldOptions=current.options.slice();
+        //limit the current cell's option to that value only
+        current.options=[value];
+        //remove the current cell's value from all its neighbour's options
+        for(let i=0;i<8;i++){
+          removeElement(current.row[i].options,value)
+          removeElement(current.column[i].options,value)
+          removeElement(current.block[i].options,value)
+        }
+        //get a new current cell
+        current=getNewCurrent();
+      }
+      
+      function removeElement(arr,val){
+        for(var i=0;i<arr.length;i++){ 
+          if (arr[i]==val) { 
+            arr.splice(i, 1); 
+          }
+        }
+      }
+      
+      function getNewCurrent(){
+        //find the cell with least entropy and check if it's not already done
+        let allTrue=true;
+        let min=10;
+        let [x,y]=[10,10]
+        for(let i=0;i<9;i++){
+          for(let j=0;j<9;j++){
+            let val=grid[i][j].options.length;
+            if(val<min && val>0 && !grid[i][j].done){
+              min=val;
+              x=i;
+              y=j;
+            }
+            if(val!=1){
+              allTrue=false;
+            }
+          }
+        }
+        //choose the cell as a new current and mark it done
+        if(x<10){
+          grid[x][y].done=true;
+          return grid[x][y];
+        }
+        else if(allTrue){
+          missionAccomplished=true;
+          return current;
+        }
+        else{
+          window.location.href+='';
+        }
+      }
+      
+      //the main Piece Class i.e. cell class
+      class Piece{
+        constructor(){
+          this.value=0;
+          this.options=[1,2,3,4,5,6,7,8,9];
+          this.done=false;
+        }
+        getNeighbours(x,y){
+          this.row=[]
+          this.column=[]
+          this.block=[]
+          for(let i=0;i<9;i++){
+            if(i!=x){
+              this.row.push(grid[i][y]);
+            }
+            if(i!=y){
+              this.column.push(grid[x][i]);
+            }
+          }
+          [x,y]=[Math.floor(x/3),Math.floor(y/3)]
+          for(let i=0;i<3;i++){
+            for(let j=0;j<3;j++){
+              let element=grid[x*3+i][y*3+j];
+              if(element!=this){
+                this.block.push(element);
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

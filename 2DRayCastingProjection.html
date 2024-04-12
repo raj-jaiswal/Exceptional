@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{
+        background-color:black;
+        margin:0;
+        padding:0;
+        display:flex;
+        justify-content:center;
+        margin-top:15px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let pos;
+      let walls=[];
+      let res=300;
+      let angle=0;
+      let fov;
+      
+      function setup(){
+        createCanvas(windowWidth-30,2*windowWidth-60);
+        pos=createVector(width/2,width/2);
+        fov=PI/4;
+        res=width/2;
+        colorMode(HSB);
+        
+        walls.push([[0,0],[0,width]]);
+        walls.push([[0,0],[width,0]]);
+        walls.push([[0,width],[width,width]]);
+        walls.push([[width,0],[width,width]]);
+        for(let i=0;i<5;i++){
+          walls.push([[random(width),random(width)],[random(width),random(width)]]);
+        }
+      }
+      function draw(){
+        background(0);
+        stroke(255);
+        
+        updatePos();
+        drawBounds();
+        
+        let a=angle;
+        let count=0;
+        while (a<fov+angle){
+          strokeWeight(2);
+          ray=calculateRay(a);
+          stroke(255,100);
+          line(ray.x1,ray.y1,ray.x2,ray.y2);
+          let dist=map(ray.d,0,width**2/4,255,0);
+          stroke(250,40,dist);
+          let mid=3*width/2;
+          dist=dist**0.5//cos((angle+fov/2-a))**0.5;
+          dist=dist*200/width///cos((angle+fov/2-a))**0.5;
+          line(count,mid-dist*10,count,mid+dist*10);
+          count+=2;
+          a+=fov/res;
+        }
+      }
+      
+      function drawBounds(){
+        for(let i=0;i<walls.length;i++){
+          line(walls[i][0][0],walls[i][0][1],
+               walls[i][1][0],walls[i][1][1]);
+        }
+        translate(0,width);
+        for(let i=0;i<4;i++){
+          line(walls[i][0][0],walls[i][0][1],
+               walls[i][1][0],walls[i][1][1]);
+        }
+        translate(0,-width);
+      }
+      
+      function updatePos(){
+        if(mouseIsPressed){
+          if(mouseX<width && mouseX>0){
+            if(mouseY<width && mouseY>0){
+              pos.x=mouseX;
+              pos.y=mouseY;
+            }
+            else if(mouseY>width && mouseY<2*width){
+              if(pmouseX<width && pmouseX>0 && pmouseY>width && pmouseY<2*width){
+                let diff=mouseX-pmouseX;
+                angle+=diff/80;
+              }
+            }
+          }
+        }
+      }
+      function calculateRay(a){
+        let x1=pos.x;
+        let y1=pos.y;
+        let x2=x1+5*width*cos(a);
+        let y2=y1+5*width*sin(a);
+        
+        let minD=100000;
+        let minX,minY;
+        walls.forEach(wall=>{
+          let x3=wall[0][0];
+          let y3=wall[0][1];
+          let x4=wall[1][0];
+          let y4=wall[1][1];
+          
+          let t1=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4));
+          let t2=((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
+          let t=t1/t2;
+          
+          let u1=((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2));
+          let u2=((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
+          let u=u1/u2;
+          
+          if(t>=0 && t<=1 && u>=0 && u<=1){
+            let x=x1+t*(x2-x1);
+            let y=y1+t*(y2-y1);
+            let d=(x1-x)**2+(y1-y)**2
+            if(d<minD){
+              minD=d;
+              minX=x;
+              minY=y;
+            }
+          }
+        });
+        return {x1,y1,x2:minX,y2:minY,d:minD};
+      }
+    </script>
+  </body>
+</html>

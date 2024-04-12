@@ -1,0 +1,178 @@
+<html>
+  <head>
+    <script src="https://kit.fontawesome.com/b575671b41.js" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+      *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family: 'Poppins', Sans-Serif;
+      }
+      body{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 10vh;
+        font-size:20px;
+        text-align:center;
+        background-color:#1b1e23;
+      }
+      .light{
+        background-color:#86eeec;
+      }
+      body::after{
+        content:'';
+        position:absolute;
+        height:250px;
+        width:250px;
+        border-radius:50%;
+        background: linear-gradient(30deg,#3071e7,#ea4a4a);
+        transform: translate(-40%,-55%);
+      }
+      .light::after{
+        background:linear-gradient(#ff9b1c,#ec3a29);
+      }
+      body::before{
+        content:'';
+        position:absolute;
+        height:250px;
+        width:250px;
+        border-radius:50%;
+        background: linear-gradient(#ed6412,#e2c72f);
+        transform: translate(45%,60%);
+      }
+      .light::before{
+        background: linear-gradient(#9b43dd,#1d91e899);
+      }
+      #container{
+        z-index:10;
+        height:320px;
+        width:240px;
+        background-color:rgba(255,255,255,0.15);
+        border-top:1px solid rgba(255,255,255,0.3);
+        border-left:1px solid rgba(255,255,255,0.3);
+        border-radius:20px;
+        box-shadow:30px 30px 30px rgba(0,0,0,0.2);
+        backdrop-filter:blur(8px);
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction:column;
+        color:white;
+        overflow:hidden;
+      }
+      .light #container{
+        background-color:rgba(255,255,255,0.2);
+        color:#343434;
+      }
+      .outer{
+        margin:10px;
+        width:180px;
+        height:90px;
+        border-radius:10px;
+        border:3px solid white;
+      }
+      .light #container .outer{
+        border-color:#343434;
+      }
+      #inner{
+        margin:2%;
+        width:96%;
+        height:91%;
+        border-radius:5px;
+        overflow:hidden;
+      }
+      #inner #percentage{
+        width:50%;
+        height:100%;
+        background:linear-gradient(90deg,#fffc01,#66e23c);
+      }
+      .light #container .outer #inner #percentage{
+        background:linear-gradient(90deg,#ed2929,#ff870c);
+      }
+      #knob{
+        position:absolute;
+        height:16px;
+        width:8px;
+        background-color:white;
+        border:3px solid white;
+        border-top-right-radius:5px;
+        border-bottom-right-radius:5px;
+        transform:translate(2250%,-300%);
+      }
+      .light #container .outer #knob{
+        border-color:#343434;
+        background-color:#343434;
+      }
+      #toggler{
+        height:35px;
+        width:35px;
+        right:10px;
+        top:10px;
+        position:absolute;
+        border-radius:50%;
+        background-color:#ffffff;
+        color:#343434;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        font-size:15px;
+      }
+      .light #container #toggler{
+        background-color:#1f2425;
+        color:white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='container'>
+      <div id="toggler" onclick="document.body.classList.toggle('light');swap();"></div>
+      <div id='Battery'>Battery</div>
+      <div class='outer'>
+        <div id='inner'><div id='percentage'></div></div>
+        <div id='knob'></div>
+      </div>
+      <div id='percent' style="font-size:25px;">50%</div>
+    </div>
+    <script>
+    let dark=true;
+    tiltIt();
+    getIt();
+    swap();
+    setInterval(getIt,1000);
+    function getIt(){
+      navigator.getBattery().then(battery=>{
+        document.querySelector('#percent').innerHTML=Math.floor(battery.level*100)+'%';
+        document.querySelector('#percentage').style.width=battery.level*100+'%';
+        if(battery.charging){
+          document.querySelector('#percent').innerHTML+=' <i class="fas fa-bolt"></i>';
+        }
+      });
+    }
+    async function tiltIt(){
+      let response=await fetch('https://raw.githubusercontent.com/micku7zu/vanilla-tilt.js/master/dist/vanilla-tilt.min.js');
+      let data=await response.text();
+      let script=document.createElement('script');
+      script.innerHTML=data;
+      document.body.append(script);
+      VanillaTilt.init(document.querySelector("#container"), {
+		    max: 25,
+		    speed: 400,
+        glare:true,
+        "max-glare":0.5
+	    });
+    }
+    function swap(){
+      if(dark){
+        document.querySelector('#toggler').innerHTML='<i class="fas fa-sun"></i>';
+      }
+      else{
+        document.querySelector('#toggler').innerHTML='<i class="fas fa-moon"></i>';
+      }
+      dark= !dark;
+    }
+    </script>
+  </body>
+</html>

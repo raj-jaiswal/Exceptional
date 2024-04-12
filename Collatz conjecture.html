@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{
+        background-color:black;
+        margin:0;
+        padding:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex-direction:column;
+        color:white;
+        font-family:Sans-Serif;
+        font-size:14px;
+      }
+      canvas{
+        margin-bottom:20px;
+      }
+      p{
+        margin-bottom:0px;
+      }
+      button{
+        width:120px;
+        margin:5px;
+      }
+      button:nth-child(1){
+        margin-bottom:20px;
+        color:red;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let len=4;
+      let angle=0.1;
+      let num=500;
+      let alpha=30;
+      let rotation=0.8;
+      let center=0;
+      function setup(){
+        createCanvas(windowWidth,windowHeight);
+        noLoop();
+        createP('Length: ');
+        let lenSlid=createSlider(1,10,5,1);
+        createP('Angle: ');
+        let angleSlid=createSlider(0.05,0.9,0.1,0.01);
+        createP('Number: ');
+        let numSlid=createSlider(500,5000,2500,10);
+        createP('Transparency: ');
+        let alphaSlid=createSlider(1,255,30,1);
+        createP('Rotation: ');
+        let rotSlid=createSlider(0,6.28,0.8,0.01);
+        createP('Center: ');
+        let centerSlid=createSlider(0,1,0,1);
+        createButton('Redraw').mousePressed(()=>{
+          len=lenSlid.value();
+          angle=angleSlid.value();
+          num=numSlid.value();
+          alpha=alphaSlid.value();
+          rotation=rotSlid.value();
+          center=centerSlid.value();
+          draw();
+        });
+        createButton('Save Image').mousePressed(()=>{
+          save('collatz.png')
+        });
+        draw();
+        alert('Scroll down for more options');
+      }
+      function draw(){
+        background(0);
+        stroke(255,alpha);
+        for(let j=1;j<num;j++){
+          let n=j;
+          let series=[];
+          while(true){
+            series.push(n);
+            n=collatz(n);
+            if(n==1){
+              break;
+            }
+          }
+          resetMatrix();
+          if(center){
+            translate(width/2,height/2);
+          }
+          else{
+            translate(0,height);
+          }
+          rotate(rotation);
+          for(let i=series.length;i>=0;i--){
+            line(0,-1,0,-len);
+            translate(0,-len);
+            if(series[i]%2==0){
+              rotate(-angle);
+            }
+            else{
+              rotate(angle);
+            }
+          }
+        }
+      }
+      function collatz(n){
+        if(n%2==0){
+          return n/2;
+        }
+        return (3*n+1)/2;
+      }
+    </script>
+  </body>
+</html>

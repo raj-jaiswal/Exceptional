@@ -1,0 +1,161 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Coin toss</title>
+    <style>
+      body{font-family:sans-serif;}
+      a
+      {
+        position:fixed;
+        display:block;
+        height:40px;
+        width:85px;
+        border:solid 3px #24af44;
+        top:45%;
+        left:11%;
+        text-align:center;
+        border-radius:25px;
+        line-height:42px;
+        background-color:#5d5d5d;
+        color:white;
+        transition:0.3s;
+        font-size:13px;
+      }
+      a:hover{
+        background-color:#24af44;
+      }
+      .label{
+        position:fixed;
+        color:white;
+        font-size:15px;
+        left:16%;
+        top:20%;
+      }
+    </style>
+</head>
+<body bgColor="#2d2d2d">
+    <div style="color:white;margin-top:10%;margin-left:25.5%;font-size:20px;">The Coin Flip Game</div>
+    <div class="label" style="left:70%;">You</div><div class="label">Computer</div>
+    <div class="label" style="left:71.5%;top:24%" id="you">00</div><div class="label" style="top:24%;left:23%" id="comp">00</div>
+    <a onclick="add(0);">Heads</a><br>
+    <a onclick="add(1);" style="left:65%">Tails</a>
+    <a onclick="reset();" style="left:37.5%;top:55%;">Reset</a>
+<script>
+  var input=[];
+  var playerInput;
+  var computerPredict;
+  var list=[];
+  
+  var ComputerScore=0;
+  var playerScore=0;
+  
+  alert("Choose either head or tail. computer tries to predict your choice. If computer predicts correctly,it gets a point,otherwise,you get one. The one who gets 50 points first wins!");
+  
+  function add(i)
+  {
+    predict();
+    
+    input.push(i);
+    playerInput=i;
+    check();
+  }
+  
+  function predict()
+  {
+    if(input.length==0||input.length==1)
+    {
+      computerPredict=parseInt(Math.random()*2);
+    }
+    else
+    {
+      for(var i=0;i<input.length;i++)
+      {
+        list.push(i);
+      }
+      compute(0);
+      computerPredict=input[list[parseInt(Math.random()*list.length)]];
+    }
+  }
+  
+  
+  function compute(a)
+  {
+    var L=[];
+    var d=a;
+    for(var k=0;k<input.length;k++)
+    {
+      if(k>d){
+      if(input[k-d]==input[input.length-1-d])
+      {
+        L.push(k);
+      }
+    }}
+    if(L.length>0)
+    {
+      list=L;
+      compute(a+1);
+    }
+  }
+  
+  function check()
+  {
+    if(input.length>4&&input[input.length-2]==input[input.length-3]&&input[input.length-3]==input[input.length-4])
+    {
+        if(playerInput==computerPredict){
+        ComputerScore++;
+        document.getElementById("comp").innerHTML=convert(ComputerScore);
+        console.log("A point to Computer");
+      }
+      else{
+        playerScore++;
+        document.getElementById("you").innerHTML=convert(playerScore);
+        console.log("A point to you");
+      }
+    }else{
+      if(playerInput==computerPredict){
+        playerScore++;
+        document.getElementById("you").innerHTML=convert(playerScore);
+        console.log("A point to you");
+      }
+      else{
+        ComputerScore++;
+        document.getElementById("comp").innerHTML=convert(ComputerScore);
+        console.log("A point to computer");
+      }
+    }
+    checkAgain();
+  }
+  
+  function checkAgain(){
+    if(playerScore>=50){
+      alert('You won!');
+      reset();
+    }
+    else if(ComputerScore>=50){
+      alert('Computer won!');
+      reset();
+    }
+  }
+  
+  
+  function reset(){
+    input=[];
+    list=[];
+    ComputerScore=0;
+    playerScore=0;
+    document.getElementById("comp").innerHTML="00";
+    document.getElementById("you").innerHTML="00";
+  }
+  
+  function convert(score){
+    str=score.toString();
+    if(str.length==1){
+      return "0"+str;
+    }
+    else{
+      return str;
+    }
+  }
+</script>
+</body>
+</html>

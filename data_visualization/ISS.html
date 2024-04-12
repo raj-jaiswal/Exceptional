@@ -1,0 +1,64 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=0.7">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <style>
+     div{
+       font-size:12px;
+     }
+   </style>
+</head>
+<body>
+  <H2>Ineternational Space Station location</H2>
+  <div>Latitude: <span id="lat"></span></div>
+  <div>Longitude: <span id="lon"></span></div>
+  <div>Altitude: <span id="alt"></span> Km</div>
+  <div>Velocity: <span id="vel"></span> Km/h</div><br>
+  <div id="map" style="height:250px;width:500px"></div>
+  <script>
+    const URL='https://api.wheretheiss.at/v1/satellites/25544';
+    let latitude=0;
+    let longitude=0;
+    let mapped=false;
+    var marker;
+    var map;
+    
+    getData();
+    setInterval(getData,1000);
+    
+    function drawMap(){
+      map = L.map('map').setView([latitude,longitude], 1);
+      const attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+      const tilesURL='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      const tiles=L.tileLayer(tilesURL,{attribution});
+      tiles.addTo(map);
+    }
+    
+    async function getData(){
+      let response=await fetch(URL);
+      let data=await response.json();
+      latitude=data.latitude;
+      longitude=data.longitude;
+      document.getElementById('lat').textContent=data.latitude;
+      document.getElementById('lon').textContent=data.longitude;
+      document.getElementById('alt').textContent=data.altitude;
+      document.getElementById('vel').textContent=data.velocity;
+      if(mapped==false){
+        drawMap();
+        mapped=true;
+      }
+      if(marker==undefined){
+        console.log('!')
+        marker = L.marker([latitude, longitude]);
+        marker.addTo(map);
+      }
+      else{
+        marker.setLatLng([latitude,longitude]);
+      }
+    }
+  </script>
+</body>

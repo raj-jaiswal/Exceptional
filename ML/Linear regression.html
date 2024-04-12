@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title>Linear Regression Algorithm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        background-color: #ffffff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let points=5;
+      let tileSize=30;
+      let X=[];
+      let Y=[];
+      let T0=0;
+      let T1=1;
+      
+      function setup(){
+        createCanvas(385,385);
+        for(var i=0;i<points;i++){
+          let x=random(10);
+          let y=random(10);
+          X.push(x);
+          Y.push(y);
+        }
+        //frameRate(30);
+      }
+      function draw(){
+        background(50);
+        translate(50,335);
+        stroke(255);
+        strokeWeight(3);
+        drawChart();
+        
+        stroke(255,20,15);
+        line(0,-T0*tileSize,tileSize*10,-(T0+(T1*tileSize))*10);
+        algorithmify();
+      }
+      function drawChart(){
+        line(0,0,335,0);
+        line(0,0,0,-335);
+        strokeWeight(0);
+        fill(255);
+        textAlign(CENTER);
+        for(var i=1;i<11;i++){
+          text(i,i*tileSize,20);
+          text(i,-20,-i*tileSize);
+        }
+        strokeWeight(3);
+        for(var i=0;i<points;i++){
+          point(X[i]*tileSize,-Y[i]*tileSize);
+        }
+      }
+      
+      function algorithmify(){
+        if(Number(hypotheses().toFixed(2))!=0){
+          let sumHDiff=hypotheses();
+          let sumHDiffMult=hypothesesWithMult();
+          
+          T0-=0.03*sumHDiff/points;
+          T1-=0.03*sumHDiffMult/points;
+        }
+      }
+      
+      function hypotheses(){
+        let sum=0;
+        for(var i=0;i<points;i++){
+          let hypo=T0+(T1*X[i]);
+          let diff=hypo-Y[i];
+          sum+=diff;
+        }
+        return sum;
+      }
+      function hypothesesWithMult(){
+        let sum=0;
+        for(var i=0;i<points;i++){
+          let hypo=T0+(T1*X[i]);
+          let diff=hypo-Y[i];
+          mult=diff*X[i];
+          sum+=mult;
+        }
+        return sum;
+      }
+    </script>
+  </body>
+</html>

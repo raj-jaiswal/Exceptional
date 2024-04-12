@@ -1,0 +1,92 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=0.7">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+</head>
+<body style="font-family:sans-serif;text-align:center;">
+  <h2 id="head">I know your location!</h2>
+  <div>You are at:<br>
+  latitude: <span id="lat"></span>&deg;<br>
+  longitude: <span id="lon"></span>&deg;</div><br>
+  <div id="map" style="height:250px;width:500px"></div><br>
+  
+  <label for="name">Please enter your name- </label><br>
+  <input id="name" style="border:1px solid black"><br>
+  <button style="margin-top:5px" onclick="connect();">Send to Database</button>
+  <button style="margin-top:5px" onclick="window.location.href='/logs'">Check Database</button><br><br>
+  <div style="text-align:center">Draw something</div>
+  <div id="canvas"></div><br>
+  <button onclick="background(0);">Clear</button>
+  
+  <script>
+    function setup(){
+      let canvas=createCanvas(250,250);
+      canvas.parent('canvas');
+      background(0);
+    }
+    /*function mousePressed(){
+      beginShape();
+    }
+    function mouseDragged(){
+      stroke(255);
+      strokeWeight(3);
+      noFill();
+      vertex(mouseX,mouseY);
+    }
+    function mouseReleased(){
+      endShape();
+    }*/
+    function draw(){
+      stroke(255);
+      strokeWeight(3);
+      line(mouseX,mouseY,pmouseX,pmouseY)
+    }
+    
+    let latitude=0;
+    let longitude=0;
+    if('geolocation' in navigator){
+      navigator.geolocation.getCurrentPosition(pos => {
+        document.getElementById('lat').textContent=pos.coords.latitude;
+        document.getElementById('lon').textContent=pos.coords.longitude;
+        latitude=pos.coords.latitude;
+        longitude=pos.coords.longitude;
+        drawMap();
+      });
+    }else{
+      documemt.body.innerHTML="please click on allow or use a different browser after refreshing the page.";
+    }
+    
+    function drawMap(){
+      let map = L.map('map').setView([latitude,longitude], 14);
+      const attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+      const tilesURL='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      const tiles=L.tileLayer(tilesURL,{attribution});
+      tiles.addTo(map);
+      let marker = L.marker([latitude, longitude]);
+      marker.addTo(map);
+    }
+    
+    async function connect(){
+      const name=document.getElementById('name');
+      const image64=document.getElementById('defaultCanvas0').toDataURL();
+      console.log(image64);
+      let data={name,latitude,longitude,image64};
+      const options={
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      };
+      const response=await fetch('/api',options);
+      const json=await response.json();
+      alert(json.status);
+    }
+  </script>
+</body>

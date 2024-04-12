@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b575671b41.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <gap>
+    <div id='main'>
+      <div class="block">
+        <div class="button" onclick="clicked(this)">
+          <i class="fa-solid fa-angle-left"></i>
+        </div>
+        <div class="button" onclick="clicked(this)">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="button" onclick="clicked(this)">
+          <i class="fa-solid fa-check"></i>
+        </div>
+      </div>
+      <div class="block">
+        <div class="menuPanel">
+          <div class="option">
+            <input type='radio' id='1' name="menuOptions" onclick="shift(1)" checked="checked"\>
+            <label for='1'>Option 1</label>
+          </div>
+          <div class="option">
+            <input type='radio' id='2' onclick="shift(2)" name="menuOptions"\>
+            <label for='2'>Option 2</label>
+          </div>
+          <div class="option">
+            <input type='radio' id='3' onclick="shift(3)" name="menuOptions"\>
+            <label for='3'>Option 3</label>
+          </div>
+          <div class="bar"></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="loader">
+          <div class="circle c1"></div>
+          <div class="circle c2"></div>
+          <div class="circle c3"></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="user"><i class="fa-solid fa-user"></i></div>
+        <div class="user"><i class="fa-solid fa-user-astronaut"></i></div>
+        <div class="user"><i class="fa-solid fa-user-doctor"></i></div>
+      </div>
+      <div class="block">
+        <div class="search-bar">
+          <input placeholder="Search"\>
+          <div class="search"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="text">
+          <div class="title">This is the Title</div>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque sodales lorem, ac semper felis rhoncus a. Vestibulum tempus at quam non viverra. Sed eget faucibus velit, tristique ultricies nisi. Nulla pulvinar, augue et convallis interdum, purus massa maximus urna, ac pellentesque ante enim vel neque. Morbi sit amet lectus odio. Vivamus rhoncus vitae odio eu fringilla. Nullam suscipit odio in arcu faucibus, vitae venenatis tellus mollis.
+        </div>
+      </div>
+      <div class="block">
+        <div class="Slider-large">
+          <div><div class="title">Title</div>
+          <div class="slider-text">35%</div></div>
+          <input type="range" min="0" max="100" value="35" onchange="changeValue(this)"\>
+        </div>
+      </div>
+      <div class="block column">
+        <input class="slider" type="range" min="0" max="100" value="25"\>
+        <input class="slider" type="range" min="0" max="100" value="69"\>
+        <input class="slider" type="range" min="0" max="100" value="15"\>
+        <input class="slider" type="range" min="0" max="100" value="90"\>
+      </div>
+      <div class="block column">
+        <div class="continue-button">
+          Click Here <i class="fa-solid fa-angle-right"></i>
+        </div>
+        <div class="continue-button">
+          Click Here <i class="fa-solid fa-angle-right"></i>
+        </div>
+      </div>
+      <div class="block column">
+        <div class="checkbox">
+          <input type="checkbox" id="option1" name="options"\>
+          <label for="option1"> Option 1</label>
+        </div>
+        <div class="checkbox">
+          <input type="checkbox" id="option2" name="options"\>
+          <label for="option2"> Option 2</label>
+        </div>
+        <div class="checkbox">
+          <input type="checkbox" id="option3" name="options"\>
+          <label for="option3"> Option 3</label>
+        </div>
+        <div class="checkbox">
+          <input type="checkbox" id="option4" name="options"\>
+          <label for="option4"> Option 4</label>
+        </div>
+      </div>
+      <div class="block">
+        <div class="dropdown">
+          <select id="dropdown-options">
+            <option>Choose an option</option>
+            <option>Lorum</option>
+            <option>Ipsum</option>
+            <option>Dolor</option>
+          </select>
+        </div>
+      </div>
+      <div class="block">
+        <div class="button2" onclick="clicked(this)">
+          Button
+        </div>
+        <div class="button2" onclick="clicked(this)">
+          Button
+        </div>
+      </div>
+      <div class="block">
+        <div class="progress-circle">
+          <svg>
+            <circle cx=67 cy=68 r=55></circle>
+          </svg>
+          <div>25%</div>
+        </div>
+      </div>
+    </div>
+    <gap>
+    <script src="script.js"></script>
+  </body>
+</html>

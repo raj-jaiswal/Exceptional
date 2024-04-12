@@ -1,0 +1,57 @@
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=0.69">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+</head>
+<body style="font-family:sans-serif">
+  <div id="map" style="height:250px;width:500px;border:3px solid rgb(15,15,15)"></div>
+  <button onclick="reset()" style="display:block;margin-top:10px">Reset Marker</button>
+  <H2>Weather: </H2>
+  <div id="weather"></div>
+  <H2>Air quality: </H2>
+  <div id="aq"></div>
+  <script>
+      let current=[0,0];
+      let lat=0,lon=0;
+      let marker;
+      
+      const map = L.map('map').setView([0,0], 1);
+      const attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors';
+      const tilesURL='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      const tiles=L.tileLayer(tilesURL,{attribution});
+      tiles.addTo(map);
+      marker=L.marker(current);
+      marker.addTo(map);
+
+    if('geolocation' in navigator){
+      navigator.geolocation.getCurrentPosition(pos => {
+        lat=pos.coords.latitude;
+        lon=pos.coords.longitude;
+        current=[lat,lon];
+        marker.setLatLng(current);
+      },err=>{documemt.body.innerHTML="please click on allow or use a different browser after refreshing the page.";});
+    }else{
+      documemt.body.innerHTML="please click on allow or use a different browser after refreshing the page.";
+    }
+    
+      getData();
+
+      map.on('click', function(e) {
+        lat=e.latlng.lat;
+        lon=e.latlng.lng;
+        marker.setLatLng([lat,lon]);
+      });
+      
+      function reset(){
+        marker.setLatLng(current);
+      }
+      
+      function getData(){
+        
+      }
+  </script>
+</body>

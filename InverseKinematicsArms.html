@@ -1,0 +1,105 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<script>
+  let tentacles=[];
+  let ball,vel;
+  function setup(){
+    createCanvas(windowWidth,windowHeight);
+    for(let i=0;i<5;i++){
+      tentacles.push(new Tentacle(5,random(-width/2,width/2)));
+    }
+    ball=createVector(0,0);
+    vel=p5.Vector.random2D().mult(4);
+  }
+  function draw(){
+    translate(width/2,height/2)
+    background(0);
+    stroke(255,180);
+    
+    circle(ball.x,ball.y,10)
+    ball.add(vel);
+    if(ball.x>width/2 || ball.x<-width/2){
+      vel.x*=-1;
+    }
+    if(ball.y>height/2 || ball.y<-height/2){
+      vel.y*=-1;
+    }
+    if(mouseIsPressed){
+      ball.x=mouseX-width/2;
+      ball.y=mouseY-height/2;
+    }
+    
+    for(let i=0;i<tentacles.length;i++){
+      tentacles[i].update();
+      tentacles[i].show();
+      tentacles[i].follow(ball.x,ball.y);
+    }
+  }
+  class segment{
+    constructor(l,a,x,y){
+      if (x instanceof segment){
+        this.a=x.b.copy();
+      }
+      else{
+        this.a=createVector(x,y);
+      }
+      this.angle=a;
+      this.len=l;
+      this.findEnd();
+    }
+    findEnd(){
+      let x=this.a.x+cos(this.angle)*this.len;
+      let y=this.a.y+sin(this.angle)*this.len;
+      this.b=createVector(x,y)
+    }
+    show(){
+      line(this.a.x,this.a.y,this.b.x,this.b.y);
+    }
+    follow(pos){
+      this.b=pos.copy();
+      let dir=p5.Vector.sub(pos,this.a);
+      dir.setMag(this.len);
+      this.angle=dir.heading();
+      this.a=p5.Vector.sub(pos,dir);
+      this.findEnd();
+    }
+    setPos(pos){
+      this.a=pos.copy();
+      this.findEnd();
+    }
+  }
+  class Tentacle{
+    constructor(num,x){
+      this.x=x;
+      this.segments=[];
+      let len=100;
+      this.segments.push(new segment(len,-PI/2,x,height/2));
+      for(let i=1;i<num;i++){
+        len=len*0.8;
+        this.segments.push(new segment(len,-PI/2,this.segments[i-1]));
+      }
+    }
+    show(){
+      for(let i=this.segments.length-1;i>=0;i--){
+        strokeWeight((this.segments.length-i)/this.segments.length*7)
+        this.segments[i].show();
+      }
+    }
+    follow(x,y){
+      this.segments[this.segments.length-1].follow(createVector(x,y));
+      for(let i=this.segments.length-2;i>=0;i--){
+        this.segments[i].follow(this.segments[i+1].a);
+      }
+    }
+    update(){
+      this.segments[0].setPos(createVector(this.x,height/2));
+      for(let i=1;i<this.segments.length;i++){
+        this.segments[i].setPos(this.segments[i-1].b);
+      }
+    }
+  }
+</script>

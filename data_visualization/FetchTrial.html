@@ -1,0 +1,13 @@
+<body>
+  <script>
+    let url="https://raw.githubusercontent.com/CodingTrain/Intro-to-Data-APIs-JS/source/module1/01a_fetch_exercise_text/poem.txt";
+    gettxt().catch(error=>{console.log(error);});
+    async function gettxt(){
+        let response=await fetch(url);
+        console.log(response);
+        let text=await response.text();
+        document.body.innerText=text;
+    }
+  </script>
+  
+</body>

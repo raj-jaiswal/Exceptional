@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let points=[];
+      let scale=0.05;
+      let h=100;
+      let offset=0;
+      function setup(){
+        createCanvas(windowWidth, windowHeight);
+        for(let i=0;i<width;i++){
+          points[i]=sin(i*scale)*h;
+        }
+        colorMode(HSB);
+      }
+      function draw(){
+        background(0);
+        translate(0,height/2);
+        noFill();
+        stroke((offset*3)%255,255,255);
+        strokeWeight(4);
+        beginShape();
+        for(let i=0;i<width;i++){
+          vertex(i,points[i]);
+        }
+        endShape();
+        
+        for(let i=0;i<width;i++){
+          points[i]=sin(i*scale+offset)*h*noise((offset-i)/1000);
+        }
+        offset+=0.1;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(51,51,51);
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let hite;
+      let witth;
+      let rows,cols;
+      let w;
+      let grid=[];
+      let safeTile=0;
+      let revealedSafeTiles=0;
+      function setup(){
+        hite=Math.floor(window.innerWidth/50) * 50
+        witth=hite;
+        createCanvas(hite-1,witth-1);
+        w=witth/10;
+        rows=height/w;
+        cols=width/w;
+        
+        for(var i=0;i<cols;i++){
+          grid[i]=[];
+          for(var j=0;j<rows;j++){
+            grid[i][j]=new Tile(i,j,w);
+          }
+        }
+        
+        for(var i=0;i<cols;i++){
+          for(var j=0;j<rows;j++){
+            grid[i][j].checkTiles();
+          }
+        }
+      }
+      function draw(){
+        background(255);
+        for(var i=0;i<cols;i++){
+          for(var j=0;j<rows;j++){
+            grid[i][j].show();
+          }
+        }
+      }
+      function mouseClicked(){
+        for(var i=0;i<cols;i++){
+          for(var j=0;j<rows;j++){
+            grid[i][j].checkClick(mouseX,mouseY);
+          }
+        }
+      }
+      class Tile{
+        constructor(i,j,w){
+          this.i=i;
+          this.j=j;
+          this.w=w;
+          this.x=i*w;
+          this.y=j*w;
+          this.mine=(random(1)>0.85);
+          this.visible=false;
+          this.minedNeighbour=0;
+          this.neighbours=[];
+        }
+        show(){
+          if(!this.visible){
+            stroke(0);
+            noFill();
+            rect(this.x,this.y,this.w-1,this.w-1);
+          }
+          else{
+            if(!this.mine){
+              fill(200)
+              rect(this.x,this.y,this.w-1,this.w-1);
+              if(this.minedNeighbour>0){
+                fill(0);
+                textSize(this.w/2);
+                text(this.minedNeighbour,this.x+this.w/3,this.y+this.w*2/3);
+              }
+            }
+            else{
+              stroke(0);
+              noFill();
+              rect(this.x,this.y,this.w-1,this.w-1);
+              fill(130);
+              ellipse(this.x+this.w/2,this.y+this.w/2,this.w/2,this.w/2);
+            }
+          }
+        }
+        checkClick(x,y){
+          if(x>this.x&&x<this.x+this.w&&y>this.y&&y<this.y+this.w){
+            if(!this.mine&&!this.visible){
+              revealedSafeTiles++;
+              checkUp();
+            }
+            else if(this.mine){
+              setTimeout(()=>{alert(`OOPS! \nLooks like you clicked on a mine!\nRefresh to Play Again.`)},300);
+              noLoop();
+            }
+            this.visible=true;
+            if(this.minedNeighbour==0&&!this.mine){
+              reveal(this);
+            }
+          }
+        }
+        checkTiles(){
+          if(!this.mine){
+            safeTile++;
+          }
+          for(var i=-1;i<=1;i++){
+            for(var j=-1;j<=1;j++){
+              if(i!=0||j!=0){
+                var tile=grid[this.i+i];
+                if(tile!=undefined){
+                  tile=tile[this.j+j];
+                }
+                if(tile!=undefined){
+                  if(i==0||j==0){
+                    this.neighbours.push(tile);
+                  }
+                  if(tile.mine){
+                    this.minedNeighbour++;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      function reveal(tile){
+        for(var i=0;i<tile.neighbours.length;i++){
+          let neighb=tile.neighbours[i];
+          if(!neighb.mine&&!neighb.visible){
+            neighb.visible=true;
+            revealedSafeTiles++;
+            checkUp();
+            if(neighb.minedNeighbour==0){
+              reveal(neighb);
+            }
+          }
+        }
+      }
+      function checkUp(){
+        if(revealedSafeTiles==safeTile){
+          setTimeout(()=>{alert(`Congratulations!\nYou Just Won!!`)},300);
+        }
+      }
+    </script>
+  </body>
+</html>

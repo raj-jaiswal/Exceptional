@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(25,25,25);
+        color:white;
+        font-family:Sans-Serif;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let video;
+      let objectDetector;
+      let output;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        video=createCapture(VIDEO,()=>{
+          objectDetector=ml5.objectDetector('cocossd',video,()=>{console.log('model ready');ready();});
+        }).hide();
+        //this is a comment lol
+      }
+      function draw(){
+        translate(0,0);
+        background(0);
+        image(video,0,0);
+        if(output){
+          for(const item of output){
+            strokeWeight(1);
+            stroke(0);
+            fill(255);
+            textSize(20);
+            text(item.label,item.x+50,item.y+50);
+            stroke(100,255,100);
+            noFill();
+            strokeWeight(3);
+            rect(item.x,item.y,item.width,item.height);
+          }
+        }
+      }
+      function ready(){
+        objectDetector.detect((err,result)=>{
+          if(err){console.error(err)}
+          output=result;
+          ready();
+        });
+      }
+    </script>
+  </body>
+</html>

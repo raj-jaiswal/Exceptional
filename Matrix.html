@@ -1,0 +1,86 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<script>
+  let fontSize=15;
+  let streams=[];
+
+  function setup(){
+    createCanvas(window.innerWidth,window.innerHeight);
+    var x=0;
+    while(x<width){
+      let stream=new Stream(x,random(3,8),round(random(10,30)));
+      stream.generateSymbols(random(-height,0));
+      streams.push(stream);
+      x+=fontSize;
+    }
+  }
+  function draw(){
+    background(0);
+    streams.forEach(stream=>{
+      stream.render();
+    });
+  }
+  
+  function Sym(x,y,s,r,c){
+    this.random=r;
+    this.x=x;
+    this.y=y;
+    this.speed=s;
+    this.value;
+    this.color=c;
+    
+    this.getSymbol=function(){
+      this.value=String.fromCharCode(0x30a0+round(random(0,96)));
+    }
+    this.show=function(){
+      textSize(fontSize);
+      fill(this.color);
+      text(this.value,this.x,this.y);
+      if(frameCount%this.random==0){
+        this.getSymbol();
+      }
+    }
+    this.move=function(){
+      if(this.y>height){
+        this.y=0;
+      }
+      else{
+        this.y+=this.speed;
+      }
+    }
+  }
+  
+  function Stream(x,s,amt){
+    this.symbols=[];
+    this.x=x;
+    this.speed=s;
+    this.amt=amt;
+    this.generateSymbols=function(y){
+      let glow=true;
+      for(var i=0;i<amt;i++){
+        let symbol;
+        if(glow&&random(1)>0.4){
+          symbol=new Sym(this.x,y,this.speed,round(random(16,23)),color(150,255,230));
+          glow=false;
+        }
+        else{
+          glow=false;
+          symbol=new Sym(this.x,y,this.speed,round(random(16,23)),color(0,255,70));
+        }
+        symbol.getSymbol();
+        this.symbols.push(symbol);
+        y-=fontSize;
+      }
+    }
+    this.render=function(){
+      this.symbols.forEach(symbol=>{
+        symbol.show();
+        symbol.move();
+      });
+    }
+  }
+</script>

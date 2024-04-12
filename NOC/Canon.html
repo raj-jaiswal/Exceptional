@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(51,51,51);
+      }
+      </style>
+  </head>
+  <body>
+    <button onClick="shoot();">shoot</button>
+    <script>
+      let canon;
+      let canonBalls=[];
+      let position;
+      function preload(){
+        canon=loadImage('canon.jpg');
+      }
+      function shoot(){
+        canonBalls.push(new Ball());
+      }
+      function setup(){
+        createCanvas(350,350);
+        position=createVector(-15,height-60);
+      }
+      function draw(){
+        background(255);
+        for(i=0;i<canonBalls.length;i++){
+          canonBalls[i].show();
+          canonBalls[i].update();
+        }
+        push();
+        translate(position.x,position.y);
+        rotate(-PI/5);
+        image(canon,0,0,100,100);
+        pop();
+      }
+      class Ball{
+        constructor(){
+          this.position=position.copy().add(createVector(75,10));
+          this.velocity=createVector(1,-1.3);
+          this.velocity.normalize();
+          this.velocity.mult(13);
+          this.acceleration=createVector(0,0);
+        }
+        show(){
+          stroke(0);
+          fill(100);
+          circle(this.position.x,this.position.y,12);
+        }
+        update(){
+          this.applyForce(createVector(0,.5));
+          this.position.add(this.velocity);
+          this.velocity.add(this.acceleration);
+          if(this.position.y>height+50){
+            canonBalls.shift();
+          }
+          this.acceleration.mult(0);
+        }
+        applyForce(f){
+          this.acceleration.add(f);
+        }
+      }
+    </script>
+  </body>
+</html>

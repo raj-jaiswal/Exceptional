@@ -1,0 +1,98 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<script>
+  let tentacles=[];
+  function setup(){
+    createCanvas(windowWidth,windowHeight);
+    for(let i=0;i<4;i++){
+      tentacles[i]=new segment(50+random()*50,PI,createVector(width,random(height)),0);
+      
+      let current=tentacles[i];
+      let length=tentacles[i].len;
+      while(length>20){
+        next=new segment(length,random()*(-PI),current.b);
+        current.child=next;
+        current=next;
+        length=length*0.6;
+      }
+    }
+    for(let i=4;i<8;i++){
+      tentacles[i]=new segment(50+random()*50,0,createVector(0,random(height)),1);
+      
+      let current=tentacles[i];
+      let length=tentacles[i].len;
+      while(length>10){
+        next=new segment(length,random()*(-PI),current.b);
+        current.child=next;
+        current=next;
+        length=length*0.6;
+      }
+    }
+  }
+  function draw(){
+    background(0);
+    stroke(255,200);
+    for(let i=0;i<tentacles.length;i++){
+      tentacles[i].update();
+      tentacles[i].show(10);
+      let current=tentacles[i];
+      
+      while(current){
+        current.tweek();
+        current=current.child;
+      }
+    }
+  }
+  class segment{
+    constructor(len,a,loc,cons){
+      this.len=len;
+      this.angle=a;
+      this.temp=a;
+      this.cons=cons;
+      if(loc instanceof segment){
+        this.a=loc.a;
+      }
+      else{
+        this.a=loc;
+      }
+      this.findEnd();
+      this.child=null;
+      this.xoff=random(1000);
+    }
+    tweek(){
+      let max=0.1
+      this.temp+=map(noise(this.xoff),0,1,max,-max);
+      if(this.cons===1){
+        this.temp=constrain(this.temp,-PI/2,PI/2)
+      } else if(this.cons===0){
+        this.temp=constrain(this.temp,PI/2,3*PI/2);
+      }
+      this.xoff+=0.1;
+    }
+    update(pos,ang){
+      this.angle=this.temp;
+      if(pos){
+        this.a=pos;
+        this.angle+=ang;
+      }
+      this.findEnd();
+      if(this.child){
+        this.child.update(this.b,this.angle);
+      }
+    }
+    findEnd(){
+      this.b=createVector(this.a.x+this.len*cos(this.angle),this.a.y+this.len*sin(this.angle));
+    }
+    show(stk){
+      strokeWeight(stk);
+      line(this.a.x,this.a.y,this.b.x,this.b.y);
+      if(this.child){
+        this.child.show(stk*0.7);
+      }
+    }
+  }
+</script>

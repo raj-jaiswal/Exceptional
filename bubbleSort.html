@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(51,51,51);
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let arr=[]
+      let w;
+      let i=0;
+      function setup(){
+        createCanvas(350,350);
+        for(let j=0;j<width;j++){
+          arr[j]=Math.round(random()*300);
+        }
+        w=width/arr.length;
+      }
+      function draw(){
+        background(51);
+        fill(255);
+        noStroke();
+        for(let j=0;j<arr.length;j++){
+          rect(w*j,height-arr[j],w,arr[j]);
+        }
+        for(let k=0;k<1500;k++){
+          if(arr[i]>arr[i+1]){
+            swap(arr,i,i+1);
+            i=-1;
+          }
+          i++;
+        }
+        if(i>arr.length){
+          noLoop();
+          console.log('DONE')
+        }
+      }
+      function swap(ar,a,b){
+        [ar[a],ar[b]]=[ar[b],ar[a]]
+      }
+    </script>
+  </body>
+</html>

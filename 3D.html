@@ -1,0 +1,102 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    body
+    {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: 'Poppins', Sans-Serif;
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      min-height:80vh;
+      background:#222;
+      overflow:hidden;
+    }
+    .container{
+      display:flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container .box{
+      transform-style:preserve-3d;
+      animation:animate 25s linear infinite;
+    }
+    
+    @keyframes animate{
+      0%{
+        transform:perspective(500px) rotateX(0deg) rotate(25deg);
+      }
+      100%{
+        transform:perspective(500px) rotateX(360deg) rotate(25deg);
+      }
+    }
+    
+    .container .box span{
+      position: absolute;
+      color:#fff;
+      font-size:1.35em;
+      white-space: nowrap;
+      text-transform:uppercase;
+      font-weight:900;
+      padding:0 10px;
+      transform-style: preserve-3d;
+      text-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      transform: translate(-50%,-50%) rotateX(calc(var(--i)*12deg)) translateZ(100px);
+      background: linear-gradient(90deg,transparent,rgba(0,0,0,0.6),rgba(0,0,0,0.3),rgba(0,0,0,0.6),transparent);
+      line-height:0.76em;
+    }
+    .container .box span i:nth-child(1){
+      font-style:initial;
+      color:#ff246f;
+    }
+    
+    .container .box span i:nth-child(3){
+      font-style:initial;
+      color:#ff246f;
+    }
+    
+    .container .box span i:nth-child(2){
+      font-style:initial;
+      color:#12b5ff;
+    }
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <div class="box">
+      <span style="--i:1;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:2;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:3;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:4;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:5;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:6;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:7;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:8;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:9;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:10;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:11;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:12;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:13;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:14;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:15;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:16;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:17;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:18;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:19;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:20;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:21;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:22;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:23;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:24;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:25;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:26;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:27;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:28;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:29;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+      <span style="--i:30;"><i>I</i> am A <i>weird</i> guy,right<i>?</i></span>
+    </div>
+  </div>
+</body>

@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      alert('Try clicking on the screen')
+      let movers=[];
+      let size=7;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        for(let i=0;i<50;i++){
+          movers[i]=new Mover();
+        }
+      }
+      function mousePressed(){
+        let mouse=createVector(mouseX,mouseY);
+        for(let i=0;i<movers.length;i++){
+          let f=p5.Vector.sub(mouse,movers[i].location);
+          f.mult(0.03);
+          f.x=0;
+          movers[i].applyForce(f);
+        }
+      }
+      function draw(){
+        background(53,150);
+        for(let i=0;i<movers.length;i++){
+          movers[i].update();
+          movers[i].show();
+        }
+      }
+      class Mover{
+        constructor(){
+          this.location=createVector(random(width),height/2);
+          this.velocity=createVector(0,0);
+          this.acceleration=createVector(0,0);
+          this.mass=random(1,4);
+        }
+        update(){
+          let f=createVector(0,0.6);
+          this.applyForce(f.mult(this.mass));
+          this.velocity.add(this.acceleration);
+          this.velocity.limit(30);
+          this.location.add(this.velocity);
+          this.check();
+          this.acceleration.mult(0);
+        }
+        show(){
+          stroke(255);
+          fill(150);
+          circle(this.location.x,this.location.y,this.mass*size)
+        }
+        check(){
+          if(this.location.x>width){this.location.x=0}
+          if(this.location.x<0){this.location.x=width}
+          if(this.location.y>height-this.mass*size/2){
+            this.location.y=height-this.mass*size/2
+            if(this.velocity.y>0){this.velocity.y=0;}
+          }
+        }
+        applyForce(force){
+          let tempA=p5.Vector.div(force,this.mass);
+          this.acceleration.add(tempA);
+        }
+      }
+    </script>
+  </body>

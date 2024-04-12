@@ -1,0 +1,238 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#660708">
+    <title>Welcome to ShrijanatSD</title>
+    
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Aclonica&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Russo+One&family=Ubuntu:ital@1&display=swap');
+      body
+      {
+        text-align: center;
+        font-size:20px;
+        font-weight: ;
+        color: #161A1D;
+        background-color:#E5383B;
+        margin:0;
+        font-family:sans-serif;
+        text-align:center;
+      }
+      #header
+      {
+        font-size:25px;
+        font-weight: ;
+        padding:12px;
+        background-color: #0B090A;
+        color:#ffffff;
+        font-family: 'Aclonica', sans-serif;
+      }
+      .buttn
+      {
+        margin:5px;
+        display:block;
+        height:40px;
+        width:255px;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        text-decoration: none;
+        background-color: #F5F3F4;
+        border:3px solid #0B090A;
+        color:#E5383B;
+        margin-bottom:15px;
+        line-height: 40px;
+        border-radius:15px 0px 15px 0px;
+        font-size:18px;
+        font-family: 'Russo One', sans-serif;
+        transition:0.5s ease;
+      }
+      .buttn:hover
+      {
+        color:white;
+        background-color:rgb(179,21,23);
+      }
+      .menubtn
+      {
+        position: fixed;
+        font-size:30px;
+        right:8px;
+        top:8px;
+        height: 30px;
+        width:30px;
+        background-color:white;
+        text-align: center;
+        border-radius: 7px;
+        border:3px #464646 solid;
+      }
+      .menubtn span
+      {
+        display:block;
+        background-color:#000000ee;
+        border-radius: 6px;
+        padding:2px;
+        margin-left:5px;
+        margin-right: 5px;
+        transition: all .5s ease;
+      }
+      .menubtn .top
+      {
+        margin-top:6.5px;
+      }
+      .menubtn .middle
+      {
+        margin-top:3px;
+        margin-bottom:3px;
+        opacity:1;
+      }
+      .menubtn .bottom
+      {
+        margin-bottom:20px;
+      }
+      .menuItem
+      {
+        position:fixed;
+        top:0px;
+        right:-500px;
+        opacity:0;
+        width:75%;
+        height:100%;
+        background-image: linear-gradient(to right,#ffffff65,#ffffff);
+        font-size:30px;
+        border-width:0px;
+        transition: all 1s ease;
+      }
+      
+      
+      .open
+      {
+        opacity:1;
+        right:0px
+      }
+      .openBtn .top
+      {
+        transform: translateY(7px) rotateZ(45deg);
+      }
+      .openBtn .middle
+      {
+        opacity:0;
+      }
+      .openBtn .bottom
+      {
+        transform: translateY(-7px) rotateZ(-45deg);
+      }
+      
+      
+      #check
+      {
+        display:none;
+      }
+      
+      .menuButton
+      {
+        display:block;
+        height: 50px;
+        width:88%;
+        font-size: 15px;
+        color:white;
+        background-color:#222222 ;
+        margin-bottom:7px;
+        margin-left:20px;
+        margin-right:50px;
+        border-radius: 10px;
+        transition: 0.3s ease;
+        text-decoration: none;
+      }
+      .menuButton .fab , .menuButton .fas
+      {
+        float:left;
+        padding-top:6px;
+        padding-left: 90px;
+      }
+      .menuButton span
+      {
+        display:block;
+        padding-top:14px;
+        text-align: center;
+        font-size:18px;
+      }
+      
+      .menuButton:hover
+      {
+        transform: translateX(30px);
+      }
+      .menuImg
+      {
+        width:180px;
+        height:180px;
+        margin-top:80px;
+        margin-bottom:20px;
+        display:block;
+        margin-left:50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar">
+    <div class="menuItem" id="menuitm">
+    <a href="Your youtube link" >
+      <img src="images/LogoS.png" class="menuImg">
+    </a>
+    <a href="Your youtube link" class="menuButton">
+      <span>Youtube</span>
+    </a>
+    <a href="Start.html" class="menuButton">
+      <span>Home</span>
+    </a>
+    <a href="To do.html" class="menuButton">
+      <span>Anything Else</span>
+    </a>
+    <a href="mailto:(YourEmail)?" class="menuButton">
+      <span>Email me</span>
+    </a>
+    </div>
+    <input type="checkbox" id="check" onclick="changeClass();">
+    <label for="check">
+      <div class="menubtn" id="btn">
+        <span class="top"></span>
+        <span class="middle"></span>
+        <span class="bottom"></span>
+      </div>
+    </label>
+    </div>
+    <div id="header">
+      ShrijanatSD
+    </div>
+    
+    <div style="font-size:25px;margin-top:40px;color:white;font-family: 'Ubuntu', sans-serif;">Welcome</div>
+    <div style="font-size:20px;margin-top:5px;margin-bottom:35px;color:white;font-family: 'Ubuntu', sans-serif;">Get what you are looking for</div>
+    
+    <div id="">
+      <a href="" class="buttn">Tunes</a>
+      <a href="" class="buttn">Images</a>
+      <a href="" class="buttn">Photographs</a>
+      <a href="" class="buttn">Blogs</a>
+    </div>
+    
+    <script>
+      const menuBtn= document.querySelector("#btn");
+      const menuitm= document.querySelector("#menuitm");
+      let MenuOpen = false;
+      function changeClass()
+      {
+        if(!MenuOpen)
+        {
+          menuitm.classList.add('open');
+          menuBtn.classList.add('openBtn');
+          MenuOpen=true;
+        }
+        else
+        {
+          menuitm.classList.remove('open');
+          menuBtn.classList.remove('openBtn');
+          MenuOpen=false;
+        }
+      }
+    </script>
+  </body>
+</html>

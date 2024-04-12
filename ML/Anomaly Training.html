@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=0.95">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        background-color: #333;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction:column;
+        text-align: center;
+        margin:5px;
+      }
+    </style>
+  </head>
+  <body>
+   <script>
+    let data;
+    let height=[];
+    let weight=[];
+    let h_w=[];
+    let mu=[];
+    let sigma2=[];
+    function preload() {
+      data=loadTable('weight-height.csv','header').rows;
+    }
+    function setup(){
+      for(var i=0;i<10000;i++){
+        height.push(float(data[i].arr[1]));
+        weight.push(float(data[i].arr[2]));
+        h_w.push(weight[i]/height[i]);
+      }
+      getMu();
+      getSigma();
+    }
+    function getMu(){
+      let sum1=0,sum2=0,sum3=0;
+      for(let i=0;i<height.length;i++){
+        sum1+=height[i];
+      }
+      for(let i=0;i<weight.length;i++){
+        sum2+=weight[i];
+      }
+      for(let i=0;i<height.length;i++){
+        sum3+=h_w[i];
+      }
+      mu[0]=sum1/height.length;
+      mu[1]=sum2/weight.length;
+      mu[2]=sum3/h_w.length;
+      console.log(mu);
+    }
+    function getSigma(){
+      let sum1=0,sum2=0,sum3=0;
+      for(let i=0;i<height.length;i++){
+        sum1+=Math.pow(height[i]-mu[0],2);
+      }
+      for(let i=0;i<height.length;i++){
+        sum2+=Math.pow(weight[i]-mu[1],2);
+      }
+      for(let i=0;i<height.length;i++){
+        sum3+=Math.pow(h_w[i]-mu[2],2);
+      }
+      sigma2[0]=sum1/height.length;
+      sigma2[1]=sum2/weight.length;
+      sigma2[2]=sum3/h_w.length;
+      console.log(sigma2);
+    }
+   </script>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let flock=[];
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        for(i=0;i<Math.floor(width/3);i++){
+          flock[i]=new particle();
+        }
+      }
+      function draw(){
+        background(50,150);
+        for(i=0;i<flock.length;i++){
+          flock[i].show();
+          flock[i].update();
+        }
+      }
+      
+      class particle{
+        constructor(){
+          this.location=createVector(random(width),random(height));
+          this.velocity=p5.Vector.random2D();
+          this.velocity.mult(random(3,4));
+          this.acceleration=createVector();
+          this.visibility=50;
+          this.maxSpeed=5;
+          this.maxForce=1;
+        }
+        show(){
+          noStroke();
+          fill(255);
+          circle(this.location.x,this.location.y,5);
+        }
+        update(){
+          this.location.add(this.velocity);
+          this.checkCorners();
+          this.applyForce(this.cohesion());
+          this.velocity.add(this.acceleration);
+          this.velocity.limit(this.maxForce);
+          this.acceleration.mult(0);
+        }
+        checkCorners(){
+          if(this.location.x>width){
+            this.location.x=0;
+          }
+          if(this.location.x<0){
+            this.location.x=width;
+          }
+          if(this.location.y>height){
+            this.location.y=0;
+          }
+          if(this.location.y<0){
+            this.location.y=height;
+          }
+        }
+        cohesion(){
+          let average=createVector();
+          let num=0;
+          for(let i=0;i<flock.length;i++){
+            let d=p5.Vector.dist(this.location,flock[i].location);
+            //d=d.mag();
+            if(d<=this.visibility){
+              average.add(flock[i].velocity);
+              num++;
+            }
+          }
+          if(num!=0){
+            average.div(num);
+            average.sub(this.velocity);
+            average.mult(this.maxSpeed);
+          }
+          return average;
+        }
+        applyForce(f){
+          f.limit(this.maxForce);
+          this.acceleration.add(f);
+        }
+      }
+    </script>
+  </body>
+</html>

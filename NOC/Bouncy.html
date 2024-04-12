@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let balls=[];
+      let initialSpeed=2.5;
+      let gap=30;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        for(let i=1;i<width;i+=gap){
+          for(let j=1;j<height;j+=gap){
+            balls.push(new Particle(i,j));
+          }
+        }
+      }
+      function draw(){
+        background(0,50);
+        noStroke();
+        for(let i=0;i<balls.length;i++){
+          balls[i].update();
+        }
+      }
+      class Particle{
+        constructor(x,y){
+          this.loc=createVector(x,y);
+          this.vel=p5.Vector.random2D();
+          this.vel.mult(initialSpeed);
+          this.red=Math.random()>0.8?true:false;
+        }
+        show(){
+          if(this.red){
+            fill(255,0,0);
+          }
+          else{
+            fill(255);
+          }
+          circle(this.loc.x,this.loc.y,5)
+        }
+        update(){
+          this.show();
+          this.loc.add(this.vel);
+          if(this.loc.x<=0||this.loc.x>=width){
+            this.vel.x*=-1;
+          }
+          if(this.loc.y<=0||this.loc.y>=height){
+            this.vel.y*=-1;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{
+        background-color:white;
+        margin:0;
+        padding:0;
+        text-align: center;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:black;
+        font-family:Sans-Serif;
+        font-size:18px;
+      }
+      #main{
+        display:flex;
+        align-items:center
+        justify-content:center;
+        flex-direction: column;
+        width:340px;
+        height:340px;
+        background-color:rgb(188,218,255);
+        padding:10px;
+        border-radius:7px;
+        border:1px solid black;
+        box-shadow:0px 0px 15px rgba(0,0,0,0.3);
+        
+      }
+      input{
+        display:block;
+        width:300px;
+        transform:translate(25%,0);
+      }
+      button{
+        display:block;
+        transform: translate(175%,0);
+        margin:5px;
+      }
+      img{
+        margin:5px;
+      }
+      span{
+        font-size:0.85em;
+        color:rgba(0,0,0,0.8);
+      }
+    </style>
+  </head>
+  <body>
+    <div id='main'>
+      Select an Image to Continue <br>
+      <span>Recommended 1:1 image</span>
+      <div>
+        <input type="file" id="file" accept="image/*" onchange="getImage(this.files);"/>
+        <img src="" height=200 width=200/>
+        <button id="submit" onclick="submit()">Texturize!</button>
+      </div>
+      <span>The Image entered here will not be stored anywhere and will not be sent to anyone.</span>
+    </div>
+    <script>
+      let imgURL;
+      let img;
+      let checker=false;
+      let canvas;
+      let grid=30;
+      function setup(){
+        canvas=createCanvas(200,200).hide();
+        background(0);
+      }
+      function draw(){
+        if(checker){
+          img=loadImage(imgURL,loaded);
+          checker=false;
+        }
+      }
+      function getImage(data){
+        imgURL=URL.createObjectURL(data[0]);
+        checker=true;
+      }
+      function loaded() {
+        let size,x,y;
+        if(img.height>img.width){
+          size=img.width;
+          x=0;
+          y=img.height/2-size/2;
+        }
+        else{
+          size=img.height;
+          x=img.width/2-size/2;
+          y=0;
+        }
+        let cropped=createImage(size,size);
+        cropped.copy(img, x, y, x + size, y + size,0,0,size,size);
+        img=cropped;
+        image(img,0,0,200,200);
+        let src=canvas.elt.toDataURL('image/jpeg');
+        document.querySelector('img').src=src;
+        
+        canvas=createCanvas(grid,grid).hide();
+        background(0);
+        image(img,0,0,grid,grid);
+        imgURL=canvas.elt.toDataURL('image/jpeg');
+        canvas=createCanvas(200,200).hide();
+      }
+      function submit(){
+        if(!imgURL){return;}
+        window.location.href=window.location.href.split('ASCII_input.html')[0]+'ASCII.html?img='+imgURL;
+      }
+    </script>
+  </body>
+</html>

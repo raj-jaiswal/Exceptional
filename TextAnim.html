@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+      :root{
+        
+      }
+      *{
+        margin:0;
+        padding:0;
+        font-family:'Space Mono',monospace;
+      }
+      body{
+        background:black;
+        color:#90ee90;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      div{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        text-transform:uppercase;
+        font-size:4rem;
+        letter-spacing:5px;
+        text-shadow: 0 0 4px #fff, 0 0 4px #90ee90, 0 0 6px #90ee90, 0 0 8px #90ee90, 0 0 10px #90ee90, 0 0 12px #90ee90, 0 0 14px #90ee90;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="text">Hi There!</div>
+    </div>
+    <script>
+      alert('click on the text')
+      let elm=document.querySelector('.text');
+      let url=window.location.href.split('?text=')[1];
+      if(url){
+        elm.textContent=url;
+      }
+      let data=elm.textContent;
+      elm.addEventListener('click',
+        async ()=>{
+          for(let j=0;j<data.length;){
+            let txt='';
+            for(let i=0;i<data.length;i++){
+              if(data[i]==' '){
+                txt+=' ';
+              }
+              else{
+                if(i<j){
+                  txt+=data[i];
+                }
+                else{
+                  txt+=String.fromCharCode(Math.floor(Math.random()*255));
+                }
+              }
+            }
+            elm.textContent=txt;
+            await sleep(50);
+            j+=0.25;
+          }
+        }
+      );
+      function sleep(milliseconds) {  
+        return new Promise(resolve => setTimeout(resolve, milliseconds));  
+      }  
+    </script>
+  </body>
+</html>

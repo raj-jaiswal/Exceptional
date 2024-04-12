@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>body {margin:0;text-align:centre;} canvas{margin-left:15px;margin-top:15px}</style>
+  </head>
+  <body>
+    <script>
+    var r=700;
+    let hour,minute,second;
+    function setup()
+    {
+      createCanvas(950,950);
+    }
+    function draw()
+    {
+      var d= new Date();
+      hour=d.getHours();minute=d.getMinutes();second=d.getSeconds();
+      translate(width/2,height/2);
+      background(50);
+      if(hour>12)
+      {
+        hour-=12;
+      }
+      hourAngle=TWO_PI/12*hour;
+      minuteAngle=TWO_PI/60*minute;
+      secondAngle=TWO_PI/60*second;
+      strokeWeight(12);
+      rotate(-PI/2);
+      
+      stroke(255,143,28);
+      drawArc(r,secondAngle);
+      rotate(secondAngle+PI/2);
+      line(0,0,0,-250);
+      rotate(-secondAngle-PI/2);
+      
+      stroke(255);
+      drawArc(r-50,minuteAngle);
+      rotate(minuteAngle+PI/2);
+      line(0,0,0,-250);
+      rotate(-minuteAngle-PI/2);
+      
+      stroke(80,158,47);
+      drawArc(r-100,hourAngle);
+      rotate(hourAngle+PI/2);
+      line(0,0,0,-250);
+      rotate(-hourAngle-PI/2);
+      
+      stroke(250);
+      fill(250);
+      ellipse(0,0,25,25);
+    }
+    function drawArc(radius,end)
+    {
+      noFill();
+      arc(0,0,radius,radius,0,end);
+    }
+    </script>
+  </body>
+</html>

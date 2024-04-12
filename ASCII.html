@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:b;
+      }
+      button{
+        margin:10px;
+        padding:10px 15px 10px 15px;
+        border:0;
+        border-radius:3px;
+        background-color:#26c2ea;
+        color:white;
+        font-size:16px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let url=window.location.href.split('?img=')[1];
+      if(!url){
+        window.location.href=window.location.href.split('ASCII.html')[0]+'ASCII_input.html';
+      }
+      
+      let img;
+      //let sequence='Ñ@#W$9876543210?!abc;:+=-,.    ';
+      let sequence='  .:-i|=+%O#@';
+      function preload(){
+        img=loadImage(url);
+      }
+      function setup(){
+        createCanvas(350,350);
+        //sequence=sequence.split('').reverse().join('');
+        
+        createButton('Save').mousePressed(()=>{
+          saveCanvas('img','png');
+        });
+      }
+      function draw(){
+        background(0);
+        img.loadPixels();
+        let d=pixelDensity();
+        let size=(width/d)/30;
+        let limit=img.width*d;
+        translate(0,size);
+        for(let x=0;x<limit;x++){
+          for(let y=0;y<limit;y++){
+            let i=(x+y*img.width)*4;
+            let r=img.pixels[i];
+            let g=img.pixels[i+1];
+            let b=img.pixels[i+2];
+            let avg=(r+g+b)/3;
+            /*fill(r,g,b);
+            noStroke();
+            circle(x*size,y*size,size-2);*/
+            fill(255);
+            textSize(size);
+            text(sequence[Math.floor(avg*(sequence.length-1)/255)],x*size,y*size);
+          }
+        }
+        img.updatePixels();
+        noLoop();
+      }
+    </script>
+  </body>
+</html>

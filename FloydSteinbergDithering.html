@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        background-color:#000;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let img;
+      let steps=1;
+      let particles=[];
+      {
+        let url= window.location.href;
+        url=url.split('?steps=');
+        if(url[1]!=undefined){
+          steps= +url[1];
+        }
+      }
+      
+      function preload(){
+        img=loadImage('cat.png');
+      }
+      
+      function setup(){
+        createCanvas(390,390);
+        img.loadPixels();
+        for(let x=0;x<img.height;x++){
+          for(let y=0;y<img.width;y++){
+            let idx=index(x,y);
+            let col=(img.pixels[idx]+img.pixels[idx+1]+img.pixels[idx+2])/3;
+            let newCol=round(steps*col/255)*floor(255/steps);
+            setColor(img,x,y,newCol)
+            
+            let err=col-newCol;
+            distributeError(img, x, y, err);
+          }
+        }
+        img.updatePixels();
+        
+        for(let x=0;x<img.height;x++){
+          for(let y=0;y<img.width;y++){
+            let idx=index(x,y);
+            let i=x/img.width*width;
+            let j=y/img.height*height;
+            if(img.pixels[idx]!=0){
+              particles.push(new Mover(i,j,img.pixels[idx]));
+            }
+          }
+        }
+      }
+      
+      function draw(){
+        background(0);
+        //image(img,0,0,width,width);
+        for (let i=0;i<particles.length;i++){
+          particles[i].show();
+          particles[i].update()
+        }
+      }
+      
+      function index(x,y){
+        return 4 * (x + y*img.width);
+      }
+      
+      function setColor(img,x,y,col){
+        let idx=index(x,y);
+        let pix=img.pixels;
+        pix[idx]=col;
+        pix[idx+1]=col;
+        pix[idx+2]=col;
+        pix[idx+3]=255;
+      }
+      
+      function distributeError(img,x,y,err){
+        addError(img, x + 1, y, err*7/16);
+        addError(img, x - 1, y + 1, err*3/16);
+        addError(img, x, y + 1, err*5/16);
+        addError(img, x + 1, y + 1, err/16);
+      }
+      
+      function addError(img,x,y,err){
+        if (x < 0 || x >= img.width || y < 0 || y >= img.height) return;
+        let idx=index(x,y);
+        let pix=img.pixels;
+        pix[idx]+=err;
+        pix[idx+1]+=err;
+        pix[idx+2]+=err;
+        pix[idx+3]=255;
+      }
+      
+      class Mover{
+        constructor(x,y,col){
+          this.desired=createVector(x,y);
+          this.color=col;
+          this.location=createVector(random(width),random(height));
+          this.velocity=createVector(random(-1,1),random(-1,1)).normalize();
+          this.velocity.mult(0.1);
+        }
+        update(){
+          this.acceleration=p5.Vector.sub(this.desired,this.location);
+          
+          this.velocity.add(this.acceleration);
+          this.velocity.mult(1/5)
+          //this.velocity.limit(5);
+          this.location.add(this.velocity);
+        }
+        show(){
+          stroke(this.color);
+          //circle(this.desired.x,this.desired.y,0.5)
+          circle(this.location.x,this.location.y,0.5)
+        }
+      }
+    </script>
+  </body>
+</html>

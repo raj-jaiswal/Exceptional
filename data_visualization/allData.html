@@ -1,0 +1,35 @@
+<body>
+  <script>
+  getData().catch(err=>{console.error(err)});
+  async function getData(){
+    const response=await fetch('/data');
+    //const data=await response.json();
+    const data={
+      0:
+      {
+        latitude:0,
+        longitude:0,
+        timestamp:Date.now()
+      },
+      1
+      {
+        latitude:0,
+        longitude:0,
+        timestamp:Date.now()
+      }
+    };
+    for(item of data){
+      var div=document.createElement('div');
+      var latLon=document.createElement('div');
+      var timestamp=document.createElement('div');
+      
+      latLon.textContent="latitude:"+item.latitude+"  "+"longitude:"+item.longitude;
+      timestamp.textContent=new Date(item.timestamp).toLocaleString();
+      
+      div.append(latLon,timestamp);
+      document.body.append(div);
+      document.body.innerHTML+='<br>'
+    }
+  }
+  </script>
+</body>

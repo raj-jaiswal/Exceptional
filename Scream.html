@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.sound.min.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(25,25,25);
+        color:white;
+        font-family:Sans-Serif;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let lastX,lastY;
+      let angle=0;
+      let m=1;
+      let size=150;
+      
+      let mic,amp;
+      
+      function setup(){
+        createCanvas(windowWidth,windowHeight);
+        background(255);
+        lastX=cos(angle)*m*size;
+        lastY=sin(angle)*m*size;
+        
+        mic=new p5.AudioIn();
+        mic.start();
+        amp = new p5.Amplitude();
+        amp.setInput(mic);
+      }
+      
+      function draw(){
+        m=amp.getLevel();
+        console.log(m);
+        angle+=0.05
+        let x=cos(angle)*m*size;
+        let y=sin(angle)*m*size;
+        translate(width/2,height/2);
+        line(lastX,lastY,x,y);
+        lastX=x;
+        lastY=y;
+      }
+    </script>
+  </body>
+</html>

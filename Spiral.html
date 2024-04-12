@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let angle=0;
+      let r=0;
+      let px=0;
+      let py=0;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        background(255);
+      }
+      function draw(){
+        let x=r*cos(angle);
+        let y=r*sin(angle);
+        fill(0);
+        translate(width/2,height/2);
+        circle(x,y,5);
+        line(px,py,x,y)
+        if(r<height/2){
+        r+=0.15;
+        angle+=0.1;
+        px=x;
+        py=y;
+        }
+      }
+    </script>
+  </body>
+</html>

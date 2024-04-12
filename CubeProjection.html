@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+        background-color:rgb(50,50,50);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/gh/freshfork/p5.EasyCam@1.2.1/p5.easycam.min.js"></script>
+    <script>
+      let detail=10;
+      let slider;
+      let size=130;
+      let easycam;
+      function setup(){
+        createCanvas(350,350,WEBGL);
+        slider=createSlider(2,6,3,1);
+        createEasyCam({distance:200});
+      }
+      function draw(){
+        background(50);
+        stroke(255);
+        strokeWeight(1);
+    
+        detail=slider.value();
+        for(let i=-detail/2;i<detail/2;i++){
+          for(let j=-detail/2;j<detail/2;j++){
+            for(let k=-detail/2;k<detail/2;k++){
+              let x1=map(i,0,detail,0,size);
+              let y1=map(j,0,detail,0,size);
+              let z1=map(k,0,detail,0,size);
+              
+              let x2=map(i+1,0,detail,0,size);
+              let y2=map(j+1,0,detail,0,size);
+              let z2=map(k+1,0,detail,0,size);
+              
+              //point(x1,y1,z1); comments here
+              if(i<detail/2-1){line(x1,y1,z1,x2,y1,z1)};
+              if(j<detail/2-1){line(x1,y1,z1,x1,y2,z1)};
+              if(k<detail/2-1){line(x1,y1,z1,x1,y1,z2)};
+              
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

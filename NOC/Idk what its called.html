@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      body{background-color:black;margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <script>
+      let grid=[];
+      let w,h;
+      let size=50;
+      let particle;
+      let gap=10;
+      function setup(){
+        createCanvas(window.innerWidth,window.innerHeight);
+        w=width/size;
+        h=height/size;
+        for(let i=0;i<h;i++){
+          grid[i]= new Array();
+          for(let j=0;j<w;j++){
+            grid[i][j]=p5.Vector.random2D();
+          }
+        }
+        particle=new Particle(width/2,height/2);
+        
+      }
+      function draw(){
+        background(0);
+        stroke(255);
+        for(let i=0;i<h;i++){
+          for(let j=0;j<w;j++){
+            let x=j*size;
+            let y=i*size;
+            push();
+            translate(x+size/2,y+size/2)
+            rotate(grid[i][j].heading());
+            line(-size/2+gap,-size/2+gap,size/2-gap,size/2-gap);
+            triangle(size/2-gap,size/2-gap,size/2-gap-3,size/2-gap,size/2-gap,size/2-gap-3);
+            pop();
+          }
+        }
+        stroke(255,50,50);
+        fill(255,50,50);
+        particle.show();
+        particle.update();
+      }
+      class Particle{
+        constructor(x,y){
+          this.x=x;
+          this.y=y;
+          this.rot=0;
+          this.velocity=grid[floor(this.y/size)][floor(this.x/size)].copy();
+          this.acc=createVector();
+        }
+        show(){
+          //circle(this.x,this.y,10);
+          push();
+          translate(this.x,this.y);
+          rotate(this.velocity.heading()+PI/2);
+          quad(0,-size/5,size/5,size/5,0,0,-size/5,size/5);
+          pop();
+        }
+        update(){
+          let g=grid[floor(this.y/size)];
+          if(g){
+            let f=g[floor(this.x/size)];
+            if(f){
+              let desired=f.copy();
+              desired.sub(this.velocity);
+              desired.mult(0.01);
+              this.acc.add(desired);
+            }
+          }
+          this.velocity.add(this.acc);
+          this.x+=this.velocity.x;
+          this.y+=this.velocity.y;
+          this.check();
+          this.acc.mult(0);
+        }
+        check(){
+          if(this.y<=0||this.y>=height ||this.x<=0||this.x>=width){
+            this.x=width/2;
+            this.y=height/2;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

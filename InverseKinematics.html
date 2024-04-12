@@ -1,0 +1,63 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<script>
+  let tentacles=[];
+  let s;
+  function setup(){
+    createCanvas(windowWidth,windowHeight);
+    tentacles.push(new segment(5,-PI/2,0,height/2));
+    for(let i=1;i<200;i++){
+      tentacles.push(new segment(5,-PI/2,tentacles[i-1]));
+    }
+    colorMode(HSB);
+  }
+  function draw(){
+    translate(width/2,height/2)
+    background(0);
+    stroke(255);
+    for(let i=0;i<tentacles.length;i++){
+      stroke(i/tentacles.length*255,255,255)
+      strokeWeight(i/tentacles.length*10)
+      tentacles[i].show();
+    }
+    if(mouseIsPressed){
+      tentacles[tentacles.length-1].follow(createVector(mouseX-width/2,mouseY-height/2));
+      for(let i=tentacles.length-2;i>=0;i--){
+        tentacles[i].follow(tentacles[i+1].a);
+      }
+    }
+  }
+  class segment{
+    constructor(l,a,x,y){
+      if (x instanceof segment){
+        this.a=x.b.copy();
+      }
+      else{
+        this.a=createVector(x,y);
+      }
+      this.angle=a;
+      this.len=l;
+      this.findEnd();
+    }
+    findEnd(){
+      let x=this.a.x+cos(this.angle)*this.len;
+      let y=this.a.y+sin(this.angle)*this.len;
+      this.b=createVector(x,y)
+    }
+    show(){
+      line(this.a.x,this.a.y,this.b.x,this.b.y);
+    }
+    follow(pos){
+      this.b=pos.copy();
+      let dir=p5.Vector.sub(pos,this.a);
+      dir.setMag(this.len);
+      this.angle=dir.heading();
+      this.a=p5.Vector.sub(pos,dir);
+      this.findEnd();
+    }
+  }
+</script>

@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        padding:5px;
+        padding-top:40px;
+        background-color:black;
+        color:white;
+      }
+      input{
+        display:block;
+        margin:10px;
+        width:90vw;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let n=0;
+      let c=5;
+      let factor=5;
+      let angle=137.5;
+      
+      let aSlider;
+      let cSlider;
+      let fSlider;
+      
+      function setup(){
+        createCanvas(window.innerWidth-10, window.innerWidth-10);
+        
+        aSlider=createSlider(0,360,137.5,0.1);
+        cSlider=createSlider(1,15,5,0.1);
+        fSlider=createSlider(1,10,5,0.1);
+        
+        angleMode(DEGREES);
+        colorMode(HSB);
+        background(0);
+      }
+      function draw(){
+        translate(width/2, height/2);
+        if(aSlider.value()!=angle || cSlider.value()!=c || fSlider.value()!=factor){
+          background(0);
+          n=0;
+          angle=aSlider.value();
+          c=cSlider.value();
+          factor=fSlider.value();
+        }
+        let a=n*angle;
+        let r=c*sqrt(n);
+        let x=r*cos(a);
+        let y=r*sin(a);
+        fill((n/factor)%255,255,255);
+        noStroke();
+        circle(x,y,5);
+        n++;
+      }
+    </script>
+  </body>
+</html>

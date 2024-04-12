@@ -1,0 +1,110 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{margin:0;}
+  button{
+    display:block;
+    position: absolute;
+    top:80vh;
+    left:50vw;
+    transform:translateX(-50%);
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background-color: #333;
+    border:0;
+    outline:0;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+  }
+  button.play{
+    background-color:#4bced1;
+  }
+  button div{
+    width: 0;
+	  height: 0;
+  	border-left: 18px solid transparent;
+  	border-right: 18px solid transparent;
+  	border-bottom: 28px solid #fff;
+  	transform:rotate(90deg) translateY(-5px);
+  }
+  button div:nth-child(2){
+    display:none;
+  }
+  button.play div{
+    width:12px;
+    height:40px;
+    background-color:white;
+    border:0;
+    transform:translateY(0) rotate(0deg);
+    margin:5px;
+  }
+  button.play div:nth-child(2){
+    display:block;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+<body>
+  <button onclick="play();"><div></div><div></div></button>
+<script>
+  let r=190;
+  let n=9;
+  let a=10;
+  let len=130;
+  let dir;
+  let sec=0;
+  let secR=150;
+  
+  function setup(){
+    createCanvas(window.innerWidth,window.innerHeight);
+    background(255);
+    translate(width/2, height/2);
+    stroke(255,60,65);
+    fill(255,60,65);
+    beginShape();
+    for(let i=0;i<TWO_PI;i+=0.01){
+      let x=(r+sin(i*n)*a)*cos(i);
+      let y=(r+sin(i*n)*a)*sin(i);
+      vertex(x,y);
+    }
+    endShape();
+    mouseX=width/2;
+    mouseY=height/2-5;
+    dir=createVector(0,1);
+    
+    sec=-PI/2;
+    setInterval(()=>{
+      sec+=TWO_PI/60;
+      sec=sec%TWO_PI;
+    },1000)
+  }
+  function draw(){
+    strokeWeight(1);
+    translate(width/2, height/2);
+    stroke(255,60,65);
+    fill(255,60,65);
+    circle(0,0,2*(r-a));
+    
+    if(mouseX<width/2+r && mouseX>width/2-r && mouseY>height/2-r && mouseY<height/2+r){
+      let origin=createVector(width/2,height/2);
+      let touch=createVector(mouseX,mouseY);
+      dir=p5.Vector.sub(touch,origin);
+    }
+    dir.normalize().mult(len);
+    stroke(255);
+    strokeWeight(40);
+    line(0,0,dir.x,dir.y);
+    dir=p5.Vector.fromAngle(dir.heading()+TWO_PI/60/frameRate());
+  
+    let secX=len*cos(sec);
+    let secY=len*sin(sec);
+    circle(secX,secY,0);
+    
+  }
+  function play(){
+    let button=document.querySelector('button');
+    button.classList.toggle('play');
+  }
+</script>
+</body>

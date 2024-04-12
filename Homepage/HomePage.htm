@@ -1,0 +1,155 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e1e1e">
+    <title>HomePage</title>
+    
+    
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital@1&family=Rajdhani&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+    #background
+      {
+        position:fixed;
+        width:100%;
+        height:100%;
+        margin:0;
+        padding:0;
+      }
+      
+      #searchBox
+      {
+        position:fixed;
+        top:33%;
+        left:15%;
+        height:30px;
+        width:250px;
+      }
+      .button
+      {
+        background:#4d4d4d;
+        height:70px;
+        width:70px;
+        padding:5px 10px 5px 10px;
+        border-radius:20px;
+      }
+      a
+      {
+        color:white;
+        text-decoration:none;
+        margin-right:23px;
+        font-family: 'Open Sans', sans-serif;
+      }
+     @media(min-device-aspect-ratio: 1/1)
+     {
+       #background
+       {
+         height: 200%;
+         width:50%;
+         top:0;
+         left:0;
+         transform: rotatez(-90deg);
+       }
+     }
+    </style>
+    
+    
+  </head>
+  
+  <body style="margin:0; padding:0;" bgcolor="#131313">
+    <img src="background.jpg" id="background">
+    <font color="white" id="greet" size="6px" style="position:fixed; font-family: 'Rajdhani', sans-serif; top:10%; left:27%; font-style:italic;">
+      Good Evening
+    </font>
+    <font color="red" size="8px" style="position:fixed; left:40%; top:17%; font-family: 'Lobster Two', cursive;">
+      Raj
+    </font>
+    
+    
+    <form action="http://www.google.com/search" method="get" id="searchBox">
+      <div style="background-color:white; padding:5px; border-radius:20px; padding-left:15px;">
+      <input type="text" name="q" id='input' style="border:0; width:190px; height:25px"/>
+      <input type="submit" class="fas fa-search" value="&#xf002;" style="font-family: FontAwesome; background-color:white; border:0; padding:5px"/>
+      </div>
+    </form>
+    
+    <table cellpadding="0" cellspacing="10" border="0" style="position:fixed; color:white; text-align:center; top:53%; left:7%;">
+      <tr style="font-size:22px;">
+        <td><a class="button" href="https://studio.youtube.com" style="padding:5px 8px 5px 8px;"><i class="fab fa-youtube"></i></a></td>
+        <td><a class="button" href="https://www.facebook.com"><i class="fab fa-facebook"></i></a></td>
+        <td><a class="button" href="https://www.exceptionistyt.ml"><i class="fas fa-globe-americas"></i></a></td>
+        <td><a class="button" href="https://www.reddit.com"><i class="fab fa-reddit"></i></a></td>
+      </tr>
+      <tr style="font-size:10px;">
+        <td><a href="https://studio.youtube.com">YT studio</a></td>
+        <td><a href="https://www.facebook.com">Facebook</a></td>
+        <td><a href="https://www.exceptionistyt.ml">Exceptionist</a></td>
+        <td><a href="https://www.reddit.com">Reddit</a></td>
+      </tr>
+    </table>
+    
+    <table cellpadding="0" cellspacing="10" border="0" style="position:fixed; color:white; text-align:center; top:68%; left:7%;">
+      <tr style="font-size:22px;">
+        <td><a class="button" href="https://blender.stackexchange.com" style="padding:5px 12px 5px 12px"><i class="fab fa-stack-overflow"></i></a></td>
+        <td><a class="button" href="https://fontawesome.com/icons?d=gallery"><i class="fab fa-font-awesome"></i></a></td>
+        <td><a class="button" href="https://www.blender.org"><i class="fas fa-globe-americas"></i></a></td>
+        <td><a class="button" href="chrome://explore/" style="padding:5px 16px 5px 16px"><i class="fas fa-ellipsis-v"></i></a></td>
+      </tr>
+      <tr style="font-size:10px;">
+        <td><a href="https://blender.stackexchange.com">Stack O...</a></td>
+        <td><a href="https://fontawesome.com/icons?d=gallery">FontAsw...</a></td>
+        <td><a href="https://www.blender.org">Blender.org</a></td>
+        <td><a href="chrome://explore/">More</a></td>
+      </tr>
+    </table>
+    
+    <script>
+      var d = new Date();
+      var n = d.getHours();
+      var greet= document.getElementById('greet');
+      
+      if(n<3)
+      {
+        greet.innerHTML='Good Night';
+        greet.style.left='30%';
+      }
+      
+      if(n>=3 && n<12)
+      {
+        greet.innerHTML='Good Morning';
+        greet.style.left='26%';
+      }
+      
+      if(n==12)
+      {
+        greet.innerHTML='Good Noon';
+        greet.style.left='30%';
+      }
+      
+      if(n>=12 && n<16)
+      {
+        greet.innerHTML='Good Afternoon';
+        greet.style.left='23%';
+      }
+      
+      if(n>=16 && n<20)
+      {
+        greet.innerHTML='Good Evening';
+        greet.style.left='27%';
+      }
+      
+      if(n>=20)
+      {
+        greet.innerHTML='Good Night';
+        greet.style.left='30%';
+      }
+      
+      document.addEventListener("visibilitychange", event => {
+        if (document.visibilityState == "visible") {
+          document.querySelector('#input').value='';
+        }
+      });
+    </script>
+    <script src="https://kit.fontawesome.com/b575671b41.js" crossorigin="anonymous"></script>
+  </body>
+</html>

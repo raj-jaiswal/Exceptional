@@ -1,0 +1,136 @@
+<html><head> 
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script> 
+  <style>body {margin:0;text-align:centre;} /*canvas{margin-left:15px;margin-top:15px}*/</style> 
+ </head> 
+ <body> 
+  <div style="font-size:25px;position:fixed;top:1050px;left:30px">
+   let the dark white lines be walls and the light ones rays of light to underatand it
+   <br>Click somewhere in grey area to see the effect working.
+   <br>Refresh the page to get new walls
+   <br>
+  </div> 
+  <script>
+      var Ray=300;
+      var Center;
+      let obsNo = 5;
+      var obstacle = [];
+      function setup()
+      {
+        createCanvas(1000,1000);
+        Center= new centre(0,0);
+        for(var i=1;i<=obsNo;i++)
+        {
+          obs = new drawRay(random(-width/2,width/2),random(-height/2,height/2),random(-width/2,width/2),random(-height/2,height/2));
+          obstacle.push(obs);
+        }
+      }
+      
+      function draw()
+      {
+        translate(width/2,height/2);
+        background(50);
+        stroke(255);
+        if(mouseIsPressed)
+        { 
+          if(mouseY<height){
+          Center.x=mouseX-width/2;
+          Center.y=mouseY-height/2;}
+        }
+        for(var i = 0;i < obstacle.length;i++)
+        {
+          obstacle[i].show(8);
+        }
+        stroke(255,255,255,100);
+        ellipse(Center.x,Center.y,10,10);
+        var Angle=360/Ray;
+        var collition;
+        for(var i=0;i<=Ray-1;i++)
+        {
+          var ray= new drawRay(Center.x,Center.y,Center.x,Center.y-1200);
+          ray.rotate(Angle*i);
+          for(var j=0;j<obstacle.length;j++)
+          {
+            obs=obstacle[j];
+            collition= collideLineLine(ray.x2,ray.y2,ray.x1,ray.y1,obs.x2,obs.y2,obs.x1,obs.y1,true);
+            ray.x2=collition.x;
+            ray.y2=collition.y;
+          }
+          ray.show(2);
+        }
+      }
+      
+      function drawRay(x1,y1,x2,y2)
+      {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.show = function(weight){
+          strokeWeight(weight);
+          this.Line=line(this.x1,this.y1,this.x2,this.y2);
+        }
+        this.rotate = function(ang){
+          this.AB=this.y1-this.y2;
+          if(ang<180){
+            this.y2=this.y1+this.AB;
+            this.x2=this.x1+(tan(ang)*this.AB);}
+          else{
+            this.y2=-(this.y1+this.AB);
+            this.x2=-(this.x1+(tan(ang)*this.AB));
+            }
+        }
+      }
+      
+      p5.prototype.collideLineLine = function(x1, y1, x2, y2, x3, y3, x4, y4,calcIntersection) {
+      
+        var intersection;
+      
+        // calculate the distance to intersection point
+        var denominator= ((x1-x2)*(y3-y4))-((y1-y2)*(x3-x4));
+        var t,u;
+        if(denominator!=0)
+        {
+          t = (((x1-x3)*(y3-y4)) - ((y1-y3)*(x3-x4))) / denominator;
+          u = (((x2-x1)*(y1-y3)) - ((y2-y1)*(x1-x3))) / denominator;
+        }else{uA=0;uB=0;}
+      
+        // if uA and uB are between 0-1, lines are colliding
+        if (t > 0 && t < 1 && u > 0 && u<1)
+        {
+          var intersectionX;
+          var intersectionY;
+          if(calcIntersection){
+            // calc the point where the lines meet
+            intersectionX = x1 + (t * (x2-x1));
+            intersectionY = y1 + (t * (y2-y1));
+          }
+      
+          if(calcIntersection){
+            intersection = {
+              "x":intersectionX,
+              "y":intersectionY
+            }
+            return intersection;
+          }else{
+            return true;
+          }
+        }
+        
+        else if(calcIntersection){
+          intersection = {
+            "x":x1,
+            "y":y1,
+            "t":t,
+            "u":u
+          }
+          return intersection;
+        }
+        else{return false;}
+      }
+
+      function centre(x,y)
+      {this.x=x;this.y=y;}
+    </script>   
+ 
+</body></html>
