@@ -1,0 +1,151 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const n=100;
+      const mag = 0.01;
+      let h;
+      let bg;
+      let points=[];
+      let bubbles=[];
+
+
+      function setup(){
+        bg = loadImage('https://media.istockphoto.com/id/1186157911/photo/clear-graduated-sky-background.webp?b=1&s=170667a&w=0&k=20&c=P-DwjFchleT3JVafAj_r5QchCxRcqpU8EuhhTU8AM7Y=');
+        createCanvas(window.innerWidth, window.innerHeight);
+        h = height/2;
+        for (i=-1; i<=n+1; i++){
+          points.push(new Point(i * width / n, h, i/30));
+        }
+
+        points.push(new Point((n+1) / n * width, height, 0));
+        points.push(new Point(-width / n, height, 0));
+      }
+
+
+      function draw(){
+        background(bg);
+        strokeWeight(3);
+        
+        drawWater();
+        drawBubbles();
+        
+        if (mouseY > h && pmouseY < h || mouseY < h && pmouseY > h){
+          points.forEach((p) => {
+            p.moveMouse();
+          });
+        }
+      }
+
+
+      function drawWater(){
+        fill(0, 85, 123, 200);
+        stroke(65, 180, 225, 100);
+        beginShape();
+        points.forEach((p) => {
+          p.show();
+          p.update()
+        });
+        endShape();
+      }
+
+
+      function drawBubbles(){
+        for(let i=0; i<100; i++){
+          if (random() < 0.002){
+            bubbles.push(new Bubble(width * random(), height));
+          }
+        }
+
+        bubbles.forEach((b) => {
+          b.update();
+          b.show();
+        })
+      }
+
+
+      class Point{
+        constructor(x, y, t){
+          this.pos = createVector(x,y);
+          this.vel = 1;
+          this.acc = 0;
+          this.f = 0;
+          this.phi = t;
+
+          if(this.pos.y != height)
+            this.pos.y += 5 * sin(t * width / 100);
+        }
+
+        show(){
+          vertex(this.pos.x, this.pos.y);
+        }
+
+        update(){
+          if(this.pos.y == height) return;
+
+          this.acc *= 0.7;
+          this.acc = mag * (h - this.pos.y);
+          this.acc += constrain(this.f, -20, 20);
+          this.f = 0;
+          this.vel += this.acc;
+          this.pos.y += this.vel;
+        }
+
+        moveMouse(){
+          this.f = 0.00001 * (mouseY - pmouseY) / Math.abs((mouseX + pmouseX)/2 - this.pos.x)**2;
+          this.f = constrain(this.f, 5, -5);
+        }
+      }
+
+
+      class Bubble{
+        constructor(x, y){
+          this.pos = createVector(x, y);
+          this.opacity = 200;
+          this.r = random() * 6;
+          this.v = 5;
+        }
+        update(){
+          this.pos.y -= this.v;
+          if (this.pos.y < points[Math.round(this.pos.x / width * n) + 1].pos.y){
+            removeBubble(this);
+          }
+        }
+        show(){
+          noStroke()
+          fill(255, this.opacity);
+          circle(this.pos.x, this.pos.y, this.r);
+          this.opacity -= 3;
+        }
+      }
+
+
+      function removeBubble(elem){
+        let temp = [];
+        bubbles.forEach((p)=>{
+            if (p != elem){
+                temp.push(p);
+            }
+        })
+        bubbles = temp;
+      }
+    </script>
+  </body>
+</html>

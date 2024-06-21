@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.dom.js"></script>
+        <style>
+            *{
+                margin:0;
+                padding:0;
+            }
+            body{
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                min-height:100vh;
+                flex-direction: column;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            let n=50;
+            let rate = 100;
+            let centers = []
+            function setup(){
+                createCanvas(window.innerWidth, window.innerHeight);
+                for(let i = 0; i < n; i++){
+                    centers.push(new Center(random() * width, random() * height));
+                }
+                background(255);
+                strokeWeight(5);
+                centers.forEach((center) => {
+                    point(center.x, center.y);
+                });
+            }
+
+            function draw(){
+                for(let i = 0; i < rate; i++){
+                    let x = random() * width;
+                    let y = random() * height;
+                    let min = Infinity;
+                    let min_idx = -1;
+                    for(let j = 0; j < centers.length; j++) {
+                        let val = centers[j].calcDist(x, y);
+                        if(val < min){
+                            min = val;
+                            min_idx = j;
+                        }
+                    }
+                    centers[min_idx].show(x, y);
+                }
+            }
+
+            class Center{
+                constructor(x, y){
+                    this.x = x;
+                    this.y = y;
+                    this.c = [int(random()*256), int(random()*256), int(random()*256)];
+                    console.log(this.c);
+                }
+                show(x, y){
+                    stroke(this.c[0], this.c[1], this.c[2]);
+                    point(x, y);
+                }
+                calcDist(x, y){
+                    return ((this.x - x) ** 2 + (this.y - y) ** 2);
+                }
+            }
+        </script>
+    </body>
+</html>
